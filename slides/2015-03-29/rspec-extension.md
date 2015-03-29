@@ -336,6 +336,8 @@ end
 
 # さらなる extend の応用
 
+使用方法:
+
 ```ruby
 describe "external web server", vagrant_root: Rails.root.join("vagrants", "httpd")
   ...
