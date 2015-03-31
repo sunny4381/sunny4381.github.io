@@ -4,7 +4,7 @@ layout: index
 
 # Tokushima.rb 第8回 LT
 
-* [RSpec の便利機能と SHIRASAGI に Database Cleaner を導入した話](/remark.js/index.html?/slides/2015-03-29/rspec-extension.md)
+* [RSpec の便利機能と SHIRASAGI に Database Cleaner を導入した話](/remark.js/index.html?%2Fslides%2F2015-03-29%2Frspec-extension.md)
 
 <!--
 # Tokushima.rb 第7回 LT

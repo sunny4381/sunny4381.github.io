@@ -22,7 +22,7 @@
     <script type="text/javascript">
       var query = window.location.search.substring(1);
       var slideshow = remark.create({
-        sourceUrl: query ? query : "index.md"
+        sourceUrl: query ? decodeURIComponent(query) : "index.md"
       });
     </script>
   </body>
