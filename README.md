@@ -7,7 +7,7 @@ sunny4381.github.io
 git clone https://github.com/sunny4381/sunny4381.github.com.git
 cd sunny4381.github.com.git
 bundle install --path vendor/bundle
-bundle exec jekyll server
+bundle exec jekyll serve
 ```
 
 ## Contributing
