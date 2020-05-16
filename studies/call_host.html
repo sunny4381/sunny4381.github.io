@@ -47,6 +47,14 @@
           hostCallback(JSON.stringify({ name: "quit" }));
         }
       });
+
+      $(window).on("beforeunload", function(ev) {
+        if (typeof hostCallback !== "undefined") {
+          ev.preventDefault();
+          ev.returnValue = '';
+          hostCallback(JSON.stringify({ name: "quit" }));
+        }
+      });
     });
   </script>
 </body>
