@@ -12,16 +12,24 @@
 </head>
 <body>
   <div class="container">
+    <div class="py-5 text-center">
+      <h2>Study about host and browser communication with Chrome DevTools Protocol</h2>
+      <p class="lead">visit <a href="https://github.com/sunny4381/cdt-host-browser-comm">Project GitHub</a>.</p>
+    </div>
+
     <div class="input-group mb-3">
-      <input name="url" type="text" class="form-control" placeholder="検証するサイトのURL" aria-label="検証するサイトのURL" aria-describedby="btn-validate">
+      <input name="url" type="text" value="https://www.yahoo.co.jp/" class="form-control" placeholder="URL" aria-label="URL" aria-describedby="btn-open">
       <div class="input-group-append">
-        <button class="btn btn-outline-secondary" type="button" id="btn-validate">検証</button>
+        <button class="btn btn-outline-secondary" type="button" id="btn-open">開く</button>
       </div>
+    </div>
+    <div class="d-flex justify-content-around">
+      <button class="btn btn-secondary btn-lg" type="button" id="btn-quit">アプリ終了</button>
     </div>
   </div>
   <script>
     $(function() {
-      $("#btn-validate").on("click", function(ev) {
+      $("#btn-open").on("click", function(ev) {
         ev.preventDefault();
 
         var url = $("input[name='url']").val();
@@ -29,9 +37,14 @@
           return;
         }
 
-        console.log(url);
-        if (typeof micheckerValidate !== "undefined") {
-          micheckerValidate(url);
+        if (typeof hostCallback !== "undefined") {
+          hostCallback(JSON.stringify({ name: "open", payload: { url: url } }));
+        }
+      });
+
+      $("#btn-quit").on("click", function(ev) {
+        if (typeof hostCallback !== "undefined") {
+          hostCallback(JSON.stringify({ name: "quit" }));
         }
       });
     });
