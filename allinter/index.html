@@ -43,97 +43,54 @@
     </div>
   </div>
 
-  <div class="container">
+  <div id="app" class="container">
     <div class="input-group mb-3">
-      <input name="url" type="url" class="form-control" placeholder="URL" aria-label="URL" aria-describedby="btn-open">
+      <input name="url" type="url" v-model="url" class="form-control" placeholder="URL" aria-label="URL" aria-describedby="btn-open">
       <div class="input-group-append">
-        <button class="btn btn-outline-secondary" type="button" id="btn-open">検証</button>
+        <button class="btn btn-outline-secondary" type="button" id="btn-open" @click="validatePage">検証</button>
       </div>
     </div>
     <div class="d-flex justify-content-around">
-      <button class="btn btn-secondary btn-lg" type="button" id="btn-quit">アプリ終了</button>
+      <button class="btn btn-secondary btn-lg" type="button" id="btn-quit" @click="quitApplication">アプリ終了</button>
     </div>
   </div>
 
-  <div id="app">
-    <form v-on:submit.prevent="addNewGrocery">
-      <label for="new-grocery">Add a grocery</label>
-      <input
-        v-model="newGroceryText"
-        id="new-grocery"
-        placeholder="E.g. a Cat Foot"
-      >
-      <button>Add</button>
-    </form>
-    <ol>
-      <todo-item v-for="(item, index) in groceryList" v-bind:todo="item" v-bind:key="item.id" v-on:remove="groceryList.splice(index, 1)"></todo-item>
-    </ol>
-  </div>
-
   <script defer>
-    $(function() {
-      $("#btn-open").on("click", function(ev) {
-        ev.preventDefault();
-
-        var url = $("input[name='url']").val();
-        if (! url) {
-          return;
-        }
-
-        if (typeof hostCallback !== "undefined") {
-          hostCallback(JSON.stringify({ name: "open", payload: { url: url } }));
-          sessionStorage.setItem("lastUrl", url);
-        }
-      });
-
-      $("#btn-quit").on("click", function(ev) {
-        if (typeof hostCallback !== "undefined") {
-          hostCallback(JSON.stringify({ name: "quit" }));
-        }
-      });
-
-      $(window).on("beforeunload", function(ev) {
-        if (typeof hostCallback !== "undefined") {
-          ev.preventDefault();
-          ev.returnValue = '';
-          hostCallback(JSON.stringify({ name: "quit" }));
-        }
-      });
-
-      // initialize
-      (function () {
-        // restore last visited url
-        const lastUrl = sessionStorage.getItem("lastUrl");
-        if (lastUrl) {
-          $("input[name='url']").val(lastUrl);
-        }
-      })();
-    });
-  </script>
-  <script defer>
-    Vue.component('todo-item', {
-      props: ['todo'],
-      template: '<li v-bind:data-id="todo.id">{{ todo.text }} <button type="button" v-on:click="$emit(\'remove\')">Remove</button></li>'
-    })
-
-    groceryList = [
-      { id: 0, text: 'Vegetables' },
-      { id: 1, text: 'Cheese' },
-      { id: 2, text: 'Whatever else humans are supposed to eat' }
-    ];
-
-    data = {
-      newGroceryText: '',
-      groceryList: groceryList
+    const lastUrl = sessionStorage.getItem("lastUrl");
+    const data = {
+      url: lastUrl ? lastUrl : '',
     }
 
-    window.app = new Vue({
+    const app = new Vue({
       el: '#app',
       data: data,
+      created: () => {
+        window.addEventListener("beforeunload", (ev) => {
+          if (typeof hostCallback !== "undefined") {
+            ev.preventDefault();
+            ev.returnValue = '';
+            hostCallback(JSON.stringify({ name: "quit" }));
+          }
+        });
+        window.addEventListener("message", (ev) => {
+          console.log({ on: "message", ev: ev, data: ev.data })
+        });
+      },
       methods: {
-        addNewGrocery: function() {
-          this.groceryList.push({ id: this.groceryList.length, text: this.newGroceryText });
-          this.newGroceryText = '';
+        validatePage: () => {
+          if (! this.url) {
+            return;
+          }
+
+          if (typeof hostCallback !== "undefined") {
+            hostCallback(JSON.stringify({ name: "open", payload: { url: this.url } }));
+            sessionStorage.setItem("lastUrl", this.url);
+          }
+        },
+        quitApplication: () => {
+          if (typeof hostCallback !== "undefined") {
+            hostCallback(JSON.stringify({ name: "quit" }));
+          }
         }
       }
     });
