@@ -56,15 +56,12 @@
   </div>
 
   <script defer>
-    const lastUrl = sessionStorage.getItem("lastUrl");
-    const data = {
-      url: lastUrl ? lastUrl : '',
-    }
-
     const app = new Vue({
-      el: '#app',
-      data: data,
-      created: () => {
+      el: "#app",
+      data: {
+        url: ""
+      },
+      created: function() {
         window.addEventListener("beforeunload", (ev) => {
           if (typeof hostCallback !== "undefined") {
             ev.preventDefault();
@@ -75,9 +72,14 @@
         window.addEventListener("message", (ev) => {
           console.log({ on: "message", ev: ev, data: ev.data })
         });
+
+        const lastUrl = sessionStorage.getItem("lastUrl");
+        if (lastUrl) {
+          this.url = lastUrl;
+        }
       },
       methods: {
-        validatePage: () => {
+        validatePage: function() {
           if (! this.url) {
             return;
           }
@@ -87,7 +89,7 @@
             sessionStorage.setItem("lastUrl", this.url);
           }
         },
-        quitApplication: () => {
+        quitApplication: function() {
           if (typeof hostCallback !== "undefined") {
             hostCallback(JSON.stringify({ name: "quit" }));
           }
