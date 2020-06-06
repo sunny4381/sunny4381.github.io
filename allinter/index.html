@@ -20,7 +20,7 @@
         設定
       </button>
       <button type="button" class="btn btn-secondary ml-2" @click="quitApplication">
-        <b-icon-exclamation-triangle-fill></b-icon-exclamation-triangle-fill>
+        <b-icon-power></b-icon-power>
         終了
       </button>
     </div>
@@ -55,16 +55,32 @@
             <small id="url-help" class="form-text text-muted">検証したい URL を入力し、「検証」ボタンをクリックしてください。</small>
           </div>
           <div class="d-flex justify-content-around">
-            <button type="submit" class="btn btn-primary btn-lg">検証</button>
+            <button type="submit" class="btn btn-primary btn-lg"><b-icon-play></b-icon-play> 検証</button>
           </div>
         </fieldset>
       </form>
 
-      <div v-if="hasHtmlCheckerResult()">
-        <h2>アクセシビリティ検証</h2>
-      </div>
-      <div v-if="hasLowVisionResult()">
-        <h2>視覚化</h2>
+      <div class="mt-3">
+        <b-card no-body>
+          <b-tabs pills card>
+            <b-tab title="アクセシビリティ検証" active>
+              <div v-if="hasHtmlCheckerResult()">
+                <b-table striped hover :items="result.htmlChecker.problem.items" :fields="result.htmlChecker.problem.fields"></b-table>
+              </div>
+            </b-tab>
+            <b-tab title="視覚化">
+              <div v-if="hasLowVisionResult()">
+                <b-table striped hover :items="result.lowVision.problem.items" :fields="result.lowVision.problem.fields"></b-table>
+                <div v-if="result.lowVision.sourceImage">
+                  <img v-bind:src="result.lowVision.sourceImage" alt="source image"></img>
+                </div>
+                <div v-if="result.lowVision.outputImage">
+                  <img v-bind:src="result.lowVision.outputImage" alt="output image"></img>
+                </div>
+              </div>
+            </b-tab>
+          </b-tabs>
+        </b-card>
       </div>
     </div> <!-- end of .container -->
   </div> <!-- end of #app -->
@@ -81,10 +97,138 @@
           validating: false,
           result: {
             htmlChecker: {
-              problems: []
+              problem: {
+                fields: [
+                  {
+                    key: "severityStr",
+                    label: "重度指数",
+                    sortable: true
+                  },
+                  {
+                    key: "evaluationItem_tableDataMetrics0",
+                    label: "知覚可能",
+                    sortable: true
+                  },
+                  {
+                    key: "evaluationItem_tableDataMetrics1",
+                    label: "操作可能",
+                    sortable: true
+                  },
+                  {
+                    key: "evaluationItem_tableDataMetrics2",
+                    label: "理解可能",
+                    sortable: true
+                  },
+                  {
+                    key: "evaluationItem_tableDataMetrics3",
+                    label: "堅牢",
+                    sortable: true
+                  },
+                  {
+                    key: "evaluationItem_tableDataGuideline0",
+                    label: "WCAG 2.0",
+                    sortable: true
+                  },
+                  {
+                    key: "evaluationItem_tableDataGuideline1",
+                    label: "Section508",
+                    sortable: true
+                  },
+                  {
+                    key: "evaluationItem_tableDataGuideline2",
+                    label: "JIS",
+                    sortable: true
+                  },
+                  {
+                    key: "evaluationItem_tableDataTechniques",
+                    label: "達成方法",
+                    sortable: true
+                  },
+                  {
+                    key: "highlightTargetPaths",
+                    label: "指摘箇所",
+                    sortable: false
+                  },
+                  {
+                    key: "description",
+                    label: "内容",
+                    sortable: false
+                  }
+                ],
+                items: []
+              }
             },
             lowVision: {
-              problems: [],
+              problem: {
+                fields: [
+                  {
+                    key: "severityStr",
+                    label: "重度指数",
+                    sortable: true
+                  },
+                  {
+                    key: "iconTooltip",
+                    label: "種類",
+                    sortable: true
+                  },
+                  {
+                    key: "evaluationItem_tableDataGuideline0",
+                    label: "WCAG 2.0",
+                    sortable: true
+                  },
+                  {
+                    key: "evaluationItem_tableDataGuideline1",
+                    label: "Section508",
+                    sortable: true
+                  },
+                  {
+                    key: "evaluationItem_tableDataGuideline2",
+                    label: "JIS",
+                    sortable: true
+                  },
+                  {
+                    key: "severityLV",
+                    label: "深刻度",
+                    sortable: true
+                  },
+                  {
+                    key: "foreground",
+                    label: "前景色",
+                    sortable: true
+                  },
+                  {
+                    key: "background",
+                    label: "背景色",
+                    sortable: true
+                  },
+                  {
+                    key: "x",
+                    label: "X座標",
+                    sortable: true
+                  },
+                  {
+                    key: "y",
+                    label: "Y座標",
+                    sortable: true
+                  },
+                  {
+                    key: "area",
+                    label: "面積",
+                    sortable: true
+                  },
+                  {
+                    key: "evaluationItem_tableDataTechniques",
+                    label: "達成方法",
+                    sortable: true
+                  },
+                  {
+                    key: "description",
+                    label: "内容",
+                    sortable: true
+                  },
+                ],
+                items: []
+              },
               sourceImage: "",
               outputImage: ""
             }
@@ -106,12 +250,45 @@
                 this.validating = false;
                 break;
               case "allinter.htmlChecker.result":
-                this.result.htmlChecker.problems = Array.from(ev.data.problems, (problem, index) => { problem.id = index; return problem; });
+                this.result.htmlChecker.problem.items = Array.from(ev.data.problems, (problem, index) => {
+                  return {
+                    id: index,
+                    severityStr: problem.severityStr,
+                    evaluationItem_tableDataMetrics0: problem.evaluationItem["tableDataMetrics"][0],
+                    evaluationItem_tableDataMetrics1: problem.evaluationItem["tableDataMetrics"][1],
+                    evaluationItem_tableDataMetrics2: problem.evaluationItem["tableDataMetrics"][2],
+                    evaluationItem_tableDataMetrics3: problem.evaluationItem["tableDataMetrics"][3],
+                    evaluationItem_tableDataGuideline0: problem.evaluationItem["tableDataGuideline"][0],
+                    evaluationItem_tableDataGuideline1: problem.evaluationItem["tableDataGuideline"][1],
+                    evaluationItem_tableDataGuideline2: problem.evaluationItem["tableDataGuideline"][2],
+                    evaluationItem_tableDataTechniques: problem.evaluationItem["tableDataTechniques"],
+                    highlightTargetPaths: "",
+                    description: problem.description
+                  };
+                });
                 break;
               case "allinter.lowVision.result":
-                this.result.lowVision.problems = Array.from(ev.data.problems, (problem, index) => { problem.id = index; return problem; });
-                this.result.lowVision.sourceImage = ev.data.sourceImage;
-                this.result.lowVision.outputImage = ev.data.outputImage;
+                this.result.lowVision.problem.items = Array.from(ev.data.problems, (problem, index) => {
+                  return {
+                    id: index,
+                    severityStr: problem.severityStr,
+                    iconTooltip: problem.iconTooltip,
+                    evaluationItem_tableDataGuideline0: problem.evaluationItem["tableDataGuideline"][0],
+                    evaluationItem_tableDataGuideline1: problem.evaluationItem["tableDataGuideline"][1],
+                    evaluationItem_tableDataGuideline2: problem.evaluationItem["tableDataGuideline"][2],
+                    evaluationItem_tableDataTechniques: problem.evaluationItem["tableDataTechniques"],
+                    severityLV: problem.severityLV,
+                    foreground: problem.foreground,
+                    background: problem.background,
+                    x: problem.x,
+                    y: problem.y,
+                    area: problem.area,
+                    evaluationItem_tableDataTechniques: problem.evaluationItem["tableDataTechniques"],
+                    description: problem.description,
+                  };
+                });
+                this.result.lowVision.sourceImage = ev.data.sourceImageDataUrl;
+                this.result.lowVision.outputImage = ev.data.outputImageDataUrl;
                 break;
             }
           });
@@ -129,8 +306,8 @@
 
             if (typeof hostCallback !== "undefined") {
               this.validating = true;
-              this.result.htmlChecker.problems = [];
-              this.result.lowVision.problems = [];
+              this.result.htmlChecker.problem.items = [];
+              this.result.lowVision.problem.items = [];
               this.result.lowVision.sourceImage = "";
               this.result.lowVision.outputImage = "";
 
@@ -144,10 +321,10 @@
             }
           },
           hasHtmlCheckerResult: function() {
-            return (this.result.htmlChecker.problems && this.result.htmlChecker.problems.length > 0);
+            return (this.result.htmlChecker.problem && this.result.htmlChecker.problem.items && this.result.htmlChecker.problem.items.length > 0);
           },
           hasLowVisionResult: function() {
-            return (this.result.lowVision.problems && this.result.lowVision.problems.length > 0);
+            return (this.result.lowVision.problem && this.result.lowVision.problem.items && this.result.lowVision.problem.items.length > 0);
           }
         }
       });
