@@ -4,98 +4,157 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>allinter | html5 accessibility and low vision linter</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap@4.5.0/dist/css/bootstrap.min.css" />
+  <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue.min.css" />
+  <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
+  <script src="//unpkg.com/browse/popper.js@1.16.1-lts/dist/umd/popper.min.js"></script>
+  <script src="//unpkg.com/vue@2.6.11/dist/vue.min.js"></script>
+  <script src="//unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue.min.js"></script>
+  <script src="//unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue-icons.min.js"></script>
 </head>
 <body>
-  <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-    <h5 class="my-0 mr-md-auto font-weight-normal">allinter - html5 accessibility and low vision linter</h5>
-    <button type="button" class="btn btn-outline-secondary" id="btn-settings" data-toggle="modal" data-target="#setting-modal">
-      <svg class="bi bi-gear" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" d="M8.837 1.626c-.246-.835-1.428-.835-1.674 0l-.094.319A1.873 1.873 0 014.377 3.06l-.292-.16c-.764-.415-1.6.42-1.184 1.185l.159.292a1.873 1.873 0 01-1.115 2.692l-.319.094c-.835.246-.835 1.428 0 1.674l.319.094a1.873 1.873 0 011.115 2.693l-.16.291c-.415.764.42 1.6 1.185 1.184l.292-.159a1.873 1.873 0 012.692 1.116l.094.318c.246.835 1.428.835 1.674 0l.094-.319a1.873 1.873 0 012.693-1.115l.291.16c.764.415 1.6-.42 1.184-1.185l-.159-.291a1.873 1.873 0 011.116-2.693l.318-.094c.835-.246.835-1.428 0-1.674l-.319-.094a1.873 1.873 0 01-1.115-2.692l.16-.292c.415-.764-.42-1.6-1.185-1.184l-.291.159A1.873 1.873 0 018.93 1.945l-.094-.319zm-2.633-.283c.527-1.79 3.065-1.79 3.592 0l.094.319a.873.873 0 001.255.52l.292-.16c1.64-.892 3.434.901 2.54 2.541l-.159.292a.873.873 0 00.52 1.255l.319.094c1.79.527 1.79 3.065 0 3.592l-.319.094a.873.873 0 00-.52 1.255l.16.292c.893 1.64-.902 3.434-2.541 2.54l-.292-.159a.873.873 0 00-1.255.52l-.094.319c-.527 1.79-3.065 1.79-3.592 0l-.094-.319a.873.873 0 00-1.255-.52l-.292.16c-1.64.893-3.433-.902-2.54-2.541l.159-.292a.873.873 0 00-.52-1.255l-.319-.094c-1.79-.527-1.79-3.065 0-3.592l.319-.094a.873.873 0 00.52-1.255l-.16-.292c-.892-1.64.902-3.433 2.541-2.54l.292.159a.873.873 0 001.255-.52l.094-.319z" clip-rule="evenodd"/>
-        <path fill-rule="evenodd" d="M8 5.754a2.246 2.246 0 100 4.492 2.246 2.246 0 000-4.492zM4.754 8a3.246 3.246 0 116.492 0 3.246 3.246 0 01-6.492 0z" clip-rule="evenodd"/>
-      </svg>
-      設定
-    </button>
-  </div>
+  <div id="app">
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+      <h5 class="my-0 mr-md-auto font-weight-normal">allinter - html5 accessibility and low vision linter</h5>
+      <button type="button" class="btn btn-outline-secondary" id="btn-settings" data-toggle="modal" data-target="#setting-modal">
+        <svg class="bi bi-gear" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M8.837 1.626c-.246-.835-1.428-.835-1.674 0l-.094.319A1.873 1.873 0 014.377 3.06l-.292-.16c-.764-.415-1.6.42-1.184 1.185l.159.292a1.873 1.873 0 01-1.115 2.692l-.319.094c-.835.246-.835 1.428 0 1.674l.319.094a1.873 1.873 0 011.115 2.693l-.16.291c-.415.764.42 1.6 1.185 1.184l.292-.159a1.873 1.873 0 012.692 1.116l.094.318c.246.835 1.428.835 1.674 0l.094-.319a1.873 1.873 0 012.693-1.115l.291.16c.764.415 1.6-.42 1.184-1.185l-.159-.291a1.873 1.873 0 011.116-2.693l.318-.094c.835-.246.835-1.428 0-1.674l-.319-.094a1.873 1.873 0 01-1.115-2.692l.16-.292c.415-.764-.42-1.6-1.185-1.184l-.291.159A1.873 1.873 0 018.93 1.945l-.094-.319zm-2.633-.283c.527-1.79 3.065-1.79 3.592 0l.094.319a.873.873 0 001.255.52l.292-.16c1.64-.892 3.434.901 2.54 2.541l-.159.292a.873.873 0 00.52 1.255l.319.094c1.79.527 1.79 3.065 0 3.592l-.319.094a.873.873 0 00-.52 1.255l.16.292c.893 1.64-.902 3.434-2.541 2.54l-.292-.159a.873.873 0 00-1.255.52l-.094.319c-.527 1.79-3.065 1.79-3.592 0l-.094-.319a.873.873 0 00-1.255-.52l-.292.16c-1.64.893-3.433-.902-2.54-2.541l.159-.292a.873.873 0 00-.52-1.255l-.319-.094c-1.79-.527-1.79-3.065 0-3.592l.319-.094a.873.873 0 00.52-1.255l-.16-.292c-.892-1.64.902-3.433 2.541-2.54l.292.159a.873.873 0 001.255-.52l.094-.319z" clip-rule="evenodd"/>
+          <path fill-rule="evenodd" d="M8 5.754a2.246 2.246 0 100 4.492 2.246 2.246 0 000-4.492zM4.754 8a3.246 3.246 0 116.492 0 3.246 3.246 0 01-6.492 0z" clip-rule="evenodd"/>
+        </svg>
+        設定
+      </button>
+      <button type="button" class="btn btn-secondary ml-2" @click="quitApplication">
+        <svg class="bi bi-exclamation-triangle-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 5zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+        </svg>
+        終了
+      </button>
+    </div>
 
-  <div class="modal fade" id="setting-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">設定</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          アクセシビリティのオプションやロービジョンのオプションを設定できるようになる予定。<br>
-          開発中のため、現在は設定できない。
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
-          <button type="button" class="btn btn-primary">保存</button>
+    <div class="modal fade" id="setting-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">設定</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            アクセシビリティのオプションやロービジョンのオプションを設定できるようになる予定。<br>
+            開発中のため、現在は設定できない。
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+            <button type="button" class="btn btn-primary">保存</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div id="app" class="container">
-    <div class="input-group mb-3">
-      <input name="url" type="url" v-model="url" class="form-control" placeholder="URL" aria-label="URL" aria-describedby="btn-open">
-      <div class="input-group-append">
-        <button class="btn btn-outline-secondary" type="button" id="btn-open" @click="validatePage">検証</button>
+    <div class="container">
+      <form v-on:submit.prevent="validatePage">
+        <fieldset v-bind:disabled="validating">
+          <div class="form-group">
+            <label for="url">URL</label>
+            <input id="url" name="url" type="url" v-model="url" class="form-control" aria-describedby="url-help" v-bind:readonly="validating">
+            <small id="url-help" class="form-text text-muted">検証したい URL を入力し、「検証」ボタンをクリックしてください。</small>
+          </div>
+          <div class="d-flex justify-content-around">
+            <button type="submit" class="btn btn-primary btn-lg">検証</button>
+          </div>
+        </fieldset>
+      </form>
+
+      <div v-if="hasHtmlCheckerResult()">
+        <h2>アクセシビリティ検証</h2>
       </div>
-    </div>
-    <div class="d-flex justify-content-around">
-      <button class="btn btn-secondary btn-lg" type="button" id="btn-quit" @click="quitApplication">アプリ終了</button>
-    </div>
-  </div>
+      <div v-if="hasLowVisionResult()">
+        <h2>視覚化</h2>
+      </div>
+    </div> <!-- end of .container -->
+  </div> <!-- end of #app -->
 
   <script defer>
-    const app = new Vue({
-      el: "#app",
-      data: {
-        url: ""
-      },
-      created: function() {
-        window.addEventListener("beforeunload", (ev) => {
-          if (typeof hostCallback !== "undefined") {
-            ev.preventDefault();
-            ev.returnValue = '';
-            hostCallback(JSON.stringify({ name: "quit" }));
-          }
-        });
-        window.addEventListener("message", (ev) => {
-          console.log({ on: "message", ev: ev, data: ev.data })
-        });
-
-        const lastUrl = sessionStorage.getItem("lastUrl");
-        if (lastUrl) {
-          this.url = lastUrl;
-        }
-      },
-      methods: {
-        validatePage: function() {
-          if (! this.url) {
-            return;
-          }
-
-          if (typeof hostCallback !== "undefined") {
-            hostCallback(JSON.stringify({ name: "open", payload: { url: this.url } }));
-            sessionStorage.setItem("lastUrl", this.url);
+    window.addEventListener("DOMContentLoaded", (ev) => {
+      const app = new Vue({
+        el: "#app",
+        data: {
+          url: "",
+          validating: false,
+          result: {
+            htmlChecker: {
+              problems: []
+            },
+            lowVision: {
+              problems: [],
+              sourceImage: "",
+              outputImage: ""
+            }
           }
         },
-        quitApplication: function() {
-          if (typeof hostCallback !== "undefined") {
-            hostCallback(JSON.stringify({ name: "quit" }));
+        created: function() {
+          window.addEventListener("beforeunload", (ev) => {
+            if (typeof hostCallback !== "undefined") {
+              ev.preventDefault();
+              ev.returnValue = '';
+              hostCallback(JSON.stringify({ name: "quit" }));
+            }
+          });
+          window.addEventListener("message", (ev) => {
+            console.log({ on: "message", ev: ev, data: ev.data })
+
+            switch (ev.data.name) {
+              case "allinter.completed":
+                this.validating = false;
+                break;
+              case "allinter.htmlChecker.result":
+                this.result.htmlChecker.problems = Array.from(ev.data.problems, (problem, index) => { problem.id = index; return problem; });
+                break;
+              case "allinter.lowVision.result":
+                this.result.lowVision.problems = Array.from(ev.data.problems, (problem, index) => { problem.id = index; return problem; });
+                this.result.lowVision.sourceImage = ev.data.sourceImage;
+                this.result.lowVision.outputImage = ev.data.outputImage;
+                break;
+            }
+          });
+
+          const lastUrl = sessionStorage.getItem("lastUrl");
+          if (lastUrl) {
+            this.url = lastUrl;
+          }
+        },
+        methods: {
+          validatePage: function() {
+            if (! this.url) {
+              return;
+            }
+
+            if (typeof hostCallback !== "undefined") {
+              this.validating = true;
+              this.result.htmlChecker.problems = [];
+              this.result.lowVision.problems = [];
+              this.result.lowVision.sourceImage = "";
+              this.result.lowVision.outputImage = "";
+
+              hostCallback(JSON.stringify({ name: "open", payload: { url: this.url } }));
+              sessionStorage.setItem("lastUrl", this.url);
+            }
+          },
+          quitApplication: function() {
+            if (typeof hostCallback !== "undefined") {
+              hostCallback(JSON.stringify({ name: "quit" }));
+            }
+          },
+          hasHtmlCheckerResult: function() {
+            return (this.result.htmlChecker.problems && this.result.htmlChecker.problems.length > 0);
+          },
+          hasLowVisionResult: function() {
+            return (this.result.lowVision.problems && this.result.lowVision.problems.length > 0);
           }
         }
-      }
+      });
     });
-  </script>
+   </script>
 </body>
 </html>
