@@ -7,7 +7,6 @@
   <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap@4.5.0/dist/css/bootstrap.min.css" />
   <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue.min.css" />
   <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
-  <script src="//unpkg.com/browse/popper.js@1.16.1-lts/dist/umd/popper.min.js"></script>
   <script src="//unpkg.com/vue@2.6.11/dist/vue.min.js"></script>
   <script src="//unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue.min.js"></script>
   <script src="//unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue-icons.min.js"></script>
@@ -76,6 +75,9 @@
   </div> <!-- end of #app -->
 
   <script defer>
+    Vue.use(BootstrapVue);
+    Vue.use(BootstrapVueIcons);
+
     window.addEventListener("DOMContentLoaded", (ev) => {
       const app = new Vue({
         el: "#app",
