@@ -6,6 +6,41 @@
   <title>allinter | html5 accessibility and low vision linter</title>
   <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap@4.5.0/dist/css/bootstrap.min.css" />
   <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue.min.css" />
+  <style type="text/css">
+    th.allinter-severity div {
+      min-width: 8em;
+    }
+    th.allinter-metric0 div,
+    th.allinter-metric1 div,
+    th.allinter-metric2 div,
+    th.allinter-metric3 div {
+      min-width: 10em;
+    }
+    th.allinter-guideline0 div,
+    th.allinter-guideline1 div,
+    th.allinter-guideline2 div {
+      min-width: 10em;
+    }
+    th.allinter-techniques div {
+      min-width: 10em;
+    }
+    th.allinter-highlight-paths div {
+      min-width: 5em;
+    }
+    th.allinter-description div {
+      min-width: 30em;
+    }
+    th.allinter-severity-lv div,
+    th.allinter-x div,
+    th.allinter-y div,
+    th.allinter-area div {
+      min-width: 4em;
+    }
+    th.allinter-foreground div,
+    th.allinter-background div {
+      min-width: 7em;
+    }
+  </style>
   <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
   <script src="//unpkg.com/vue@2.6.11/dist/vue.min.js"></script>
   <script src="//unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue.min.js"></script>
@@ -65,12 +100,12 @@
           <b-tabs pills card>
             <b-tab title="アクセシビリティ検証" active>
               <div v-if="hasHtmlCheckerResult()">
-                <b-table striped hover :items="result.htmlChecker.problem.items" :fields="result.htmlChecker.problem.fields"></b-table>
+                <b-table striped hover responsive sticky-header :items="result.htmlChecker.problem.items" :fields="result.htmlChecker.problem.fields"></b-table>
               </div>
             </b-tab>
             <b-tab title="視覚化">
               <div v-if="hasLowVisionResult()">
-                <b-table striped hover :items="result.lowVision.problem.items" :fields="result.lowVision.problem.fields"></b-table>
+                <b-table striped hover responsive sticky-header :items="result.lowVision.problem.items" :fields="result.lowVision.problem.fields"></b-table>
                 <div v-if="result.lowVision.sourceImage">
                   <img v-bind:src="result.lowVision.sourceImage" alt="source image"></img>
                 </div>
@@ -102,56 +137,67 @@
                   {
                     key: "severityStr",
                     label: "重度指数",
+                    class: "allinter-severity",
                     sortable: true
                   },
                   {
                     key: "evaluationItem_tableDataMetrics0",
                     label: "知覚可能",
+                    class: "allinter-metric0",
                     sortable: true
                   },
                   {
                     key: "evaluationItem_tableDataMetrics1",
                     label: "操作可能",
+                    class: "allinter-metric1",
                     sortable: true
                   },
                   {
                     key: "evaluationItem_tableDataMetrics2",
                     label: "理解可能",
+                    class: "allinter-metric2",
                     sortable: true
                   },
                   {
                     key: "evaluationItem_tableDataMetrics3",
                     label: "堅牢",
+                    class: "allinter-metric3",
                     sortable: true
                   },
                   {
                     key: "evaluationItem_tableDataGuideline0",
                     label: "WCAG 2.0",
+                    class: "allinter-guideline0",
                     sortable: true
                   },
                   {
                     key: "evaluationItem_tableDataGuideline1",
                     label: "Section508",
+                    class: "allinter-guideline1",
                     sortable: true
                   },
                   {
                     key: "evaluationItem_tableDataGuideline2",
                     label: "JIS",
+                    class: "allinter-guideline2",
                     sortable: true
                   },
                   {
                     key: "evaluationItem_tableDataTechniques",
                     label: "達成方法",
+                    class: "allinter-techniques",
                     sortable: true
                   },
                   {
                     key: "highlightTargetPaths",
                     label: "指摘箇所",
+                    class: "allinter-highlight-paths",
                     sortable: false
                   },
                   {
                     key: "description",
                     label: "内容",
+                    class: "allinter-description",
                     sortable: false
                   }
                 ],
@@ -164,66 +210,79 @@
                   {
                     key: "severityStr",
                     label: "重度指数",
+                    class: "allinter-severity",
                     sortable: true
                   },
-                  {
-                    key: "iconTooltip",
-                    label: "種類",
-                    sortable: true
-                  },
+                  // {
+                  //   key: "iconTooltip",
+                  //   label: "種類",
+                  //   class: "allinter-icon",
+                  //   sortable: true
+                  // },
                   {
                     key: "evaluationItem_tableDataGuideline0",
                     label: "WCAG 2.0",
+                    class: "allinter-guideline0",
                     sortable: true
                   },
                   {
                     key: "evaluationItem_tableDataGuideline1",
                     label: "Section508",
+                    class: "allinter-guideline1",
                     sortable: true
                   },
                   {
                     key: "evaluationItem_tableDataGuideline2",
                     label: "JIS",
+                    class: "allinter-guideline2",
                     sortable: true
                   },
                   {
                     key: "severityLV",
                     label: "深刻度",
+                    class: "allinter-severity-lv",
                     sortable: true
                   },
                   {
                     key: "foreground",
                     label: "前景色",
+                    class: "allinter-foreground",
                     sortable: true
                   },
                   {
                     key: "background",
                     label: "背景色",
+                    class: "allinter-background",
                     sortable: true
                   },
                   {
                     key: "x",
                     label: "X座標",
+                    class: "allinter-x",
                     sortable: true
                   },
                   {
                     key: "y",
                     label: "Y座標",
+                    class: "allinter-y",
                     sortable: true
                   },
                   {
                     key: "area",
                     label: "面積",
+                    class: "allinter-area",
                     sortable: true
                   },
                   {
                     key: "evaluationItem_tableDataTechniques",
                     label: "達成方法",
+                    class: "allinter-techniques",
                     sortable: true
                   },
                   {
                     key: "description",
                     label: "内容",
+                    class: "allinter-description",
                     sortable: true
                   },
                 ],
