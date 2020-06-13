@@ -103,31 +103,31 @@
                 <div class="row">
                   <div class="col-3">
                     <div class="list-group">
-                      <button type="button" class="list-group-item list-group-item-action active">
+                      <button type="button" class="list-group-item list-group-item-action active" v-on:click="result.htmlChecker.problem.filter = null">
                         <span class="mr-auto">すべての項目</span>
                         <span class="badge badge-secondary">{{result.htmlChecker.problem.items.length.toLocaleString()}}</span>
                       </button>
                       <hr>
-                      <button type="button" class="list-group-item list-group-item-action">
+                      <button type="button" class="list-group-item list-group-item-action" v-on:click="result.htmlChecker.problem.filter = '問題あり'">
                         <span class="mr-auto">問題あり</span>
                         <span class="badge badge-secondary">{{result.htmlChecker.problem.counts[0].toLocaleString()}}</span>
                       </button>
-                      <button type="button" class="list-group-item list-group-item-action">
+                      <button type="button" class="list-group-item list-group-item-action" v-on:click="result.htmlChecker.problem.filter = '問題の可能性大'">
                         <span class="mr-auto">問題の可能性大</span>
                         <span class="badge badge-secondary">{{result.htmlChecker.problem.counts[1].toLocaleString()}}</span>
                       </button>
-                      <button type="button" class="list-group-item list-group-item-action">
+                      <button type="button" class="list-group-item list-group-item-action" v-on:click="result.htmlChecker.problem.filter = '要判断箇所'">
                         <span class="mr-auto">要判断箇所</span>
                         <span class="badge badge-secondary">{{result.htmlChecker.problem.counts[2].toLocaleString()}}</span>
                       </button>
-                      <button type="button" class="list-group-item list-group-item-action">
+                      <button type="button" class="list-group-item list-group-item-action" v-on:click="result.htmlChecker.problem.filter = '手動確認'">
                         <span class="mr-auto">手動確認</span>
                         <span class="badge badge-secondary">{{result.htmlChecker.problem.counts[3].toLocaleString()}}</span>
                       </button>
                     </div>
                   </div>
                   <div class="col-9">
-                    <b-table striped hover responsive sticky-header :items="result.htmlChecker.problem.items" :fields="result.htmlChecker.problem.fields"></b-table>
+                    <b-table striped hover responsive sticky-header :items="result.htmlChecker.problem.items" :fields="result.htmlChecker.problem.fields" :filter="result.htmlChecker.problem.filter" :filter-included-fields="result.htmlChecker.problem.filterOn"></b-table>
                   </div>
                 </div>
               </div>
@@ -137,31 +137,31 @@
                 <div class="row">
                   <div class="col-3">
                     <div class="list-group">
-                      <button type="button" class="list-group-item list-group-item-action active">
+                      <button type="button" class="list-group-item list-group-item-action active" v-on:click="result.lowVision.problem.filter = null">
                         <span class="mr-auto">すべての項目</span>
                         <span class="badge badge-secondary">{{result.lowVision.problem.items.length.toLocaleString()}}</span>
                       </button>
                       <hr>
-                      <button type="button" class="list-group-item list-group-item-action">
+                      <button type="button" class="list-group-item list-group-item-action" v-on:click="result.lowVision.problem.filter = '問題あり'">
                         <span class="mr-auto">問題あり</span>
                         <span class="badge badge-secondary">{{result.lowVision.problem.counts[0].toLocaleString()}}</span>
                       </button>
-                      <button type="button" class="list-group-item list-group-item-action">
+                      <button type="button" class="list-group-item list-group-item-action" v-on:click="result.lowVision.problem.filter = '問題の可能性大'">
                         <span class="mr-auto">問題の可能性大</span>
                         <span class="badge badge-secondary">{{result.lowVision.problem.counts[1].toLocaleString()}}</span>
                       </button>
-                      <button type="button" class="list-group-item list-group-item-action">
+                      <button type="button" class="list-group-item list-group-item-action" v-on:click="result.lowVision.problem.filter = '要判断箇所'">
                         <span class="mr-auto">要判断箇所</span>
                         <span class="badge badge-secondary">{{result.lowVision.problem.counts[2].toLocaleString()}}</span>
                       </button>
-                      <button type="button" class="list-group-item list-group-item-action">
+                      <button type="button" class="list-group-item list-group-item-action" v-on:click="result.lowVision.problem.filter = '手動確認'">
                         <span class="mr-auto">手動確認</span>
                         <span class="badge badge-secondary">{{result.lowVision.problem.counts[3].toLocaleString()}}</span>
                       </button>
                     </div>
                   </div>
                   <div class="col-9">
-                    <b-table striped hover responsive sticky-header :items="result.lowVision.problem.items" :fields="result.lowVision.problem.fields"></b-table>
+                    <b-table striped hover responsive sticky-header :items="result.lowVision.problem.items" :fields="result.lowVision.problem.fields" :filter="result.lowVision.problem.filter" :filter-included-fields="result.lowVision.problem.filterOn"></b-table>
                   </div>
                 </div>
                 <div v-if="result.lowVision.sourceImage">
@@ -259,7 +259,10 @@
                     sortable: false
                   }
                 ],
-                items: []
+                items: [],
+                counts: [],
+                filter: null,
+                filterOn: [ "severityStr" ]
               }
             },
             lowVision: {
@@ -344,7 +347,10 @@
                     sortable: true
                   },
                 ],
-                items: []
+                items: [],
+                counts: [],
+                filter: null,
+                filterOn: [ "severityStr" ]
               },
               sourceImage: "",
               outputImage: ""
@@ -458,8 +464,12 @@
               this.validating = true;
               this.result.htmlChecker.problem.items = [];
               this.result.htmlChecker.problem.counts = [ 0, 0, 0, 0 ];
+              this.result.htmlChecker.problem.filter = null;
+              this.result.htmlChecker.problem.filterOn = [ "severityStr" ];
               this.result.lowVision.problem.items = [];
               this.result.lowVision.problem.counts = [ 0, 0, 0, 0 ];
+              this.result.lowVision.problem.filter = null;
+              this.result.lowVision.problem.filterOn = [ "severityStr" ];
               this.result.lowVision.sourceImage = "";
               this.result.lowVision.outputImage = "";
 
