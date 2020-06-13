@@ -103,24 +103,24 @@
                 <div class="row">
                   <div class="col-3">
                     <div class="list-group">
-                      <button type="button" class="list-group-item list-group-item-action active" v-on:click="result.htmlChecker.problem.filter = null">
+                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: !result.htmlChecker.problem.filter }" v-on:click="result.htmlChecker.problem.filter = null">
                         <span class="mr-auto">すべての項目</span>
                         <span class="badge badge-secondary">{{result.htmlChecker.problem.items.length.toLocaleString()}}</span>
                       </button>
                       <hr>
-                      <button type="button" class="list-group-item list-group-item-action" v-on:click="result.htmlChecker.problem.filter = '問題あり'">
+                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: result.htmlChecker.problem.filter === '問題あり' }" v-on:click="result.htmlChecker.problem.filter = '問題あり'">
                         <span class="mr-auto">問題あり</span>
                         <span class="badge badge-secondary">{{result.htmlChecker.problem.counts[0].toLocaleString()}}</span>
                       </button>
-                      <button type="button" class="list-group-item list-group-item-action" v-on:click="result.htmlChecker.problem.filter = '問題の可能性大'">
+                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: result.htmlChecker.problem.filter === '問題の可能性大' }" v-on:click="result.htmlChecker.problem.filter = '問題の可能性大'">
                         <span class="mr-auto">問題の可能性大</span>
                         <span class="badge badge-secondary">{{result.htmlChecker.problem.counts[1].toLocaleString()}}</span>
                       </button>
-                      <button type="button" class="list-group-item list-group-item-action" v-on:click="result.htmlChecker.problem.filter = '要判断箇所'">
+                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: result.htmlChecker.problem.filter === '要判断箇所' }" v-on:click="result.htmlChecker.problem.filter = '要判断箇所'">
                         <span class="mr-auto">要判断箇所</span>
                         <span class="badge badge-secondary">{{result.htmlChecker.problem.counts[2].toLocaleString()}}</span>
                       </button>
-                      <button type="button" class="list-group-item list-group-item-action" v-on:click="result.htmlChecker.problem.filter = '手動確認'">
+                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: result.htmlChecker.problem.filter === '手動確認' }" v-on:click="result.htmlChecker.problem.filter = '手動確認'">
                         <span class="mr-auto">手動確認</span>
                         <span class="badge badge-secondary">{{result.htmlChecker.problem.counts[3].toLocaleString()}}</span>
                       </button>
@@ -137,24 +137,24 @@
                 <div class="row">
                   <div class="col-3">
                     <div class="list-group">
-                      <button type="button" class="list-group-item list-group-item-action active" v-on:click="result.lowVision.problem.filter = null">
+                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: !result.lowVision.problem.filter }" v-on:click="result.lowVision.problem.filter = null">
                         <span class="mr-auto">すべての項目</span>
                         <span class="badge badge-secondary">{{result.lowVision.problem.items.length.toLocaleString()}}</span>
                       </button>
                       <hr>
-                      <button type="button" class="list-group-item list-group-item-action" v-on:click="result.lowVision.problem.filter = '問題あり'">
+                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: result.lowVision.problem.filter === '問題あり' }" v-on:click="result.lowVision.problem.filter = '問題あり'">
                         <span class="mr-auto">問題あり</span>
                         <span class="badge badge-secondary">{{result.lowVision.problem.counts[0].toLocaleString()}}</span>
                       </button>
-                      <button type="button" class="list-group-item list-group-item-action" v-on:click="result.lowVision.problem.filter = '問題の可能性大'">
+                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: result.lowVision.problem.filter === '問題の可能性大' }" v-on:click="result.lowVision.problem.filter = '問題の可能性大'">
                         <span class="mr-auto">問題の可能性大</span>
                         <span class="badge badge-secondary">{{result.lowVision.problem.counts[1].toLocaleString()}}</span>
                       </button>
-                      <button type="button" class="list-group-item list-group-item-action" v-on:click="result.lowVision.problem.filter = '要判断箇所'">
+                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: result.lowVision.problem.filter === '要判断箇所' }" v-on:click="result.lowVision.problem.filter = '要判断箇所'">
                         <span class="mr-auto">要判断箇所</span>
                         <span class="badge badge-secondary">{{result.lowVision.problem.counts[2].toLocaleString()}}</span>
                       </button>
-                      <button type="button" class="list-group-item list-group-item-action" v-on:click="result.lowVision.problem.filter = '手動確認'">
+                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: result.lowVision.problem.filter === '手動確認' }" v-on:click="result.lowVision.problem.filter = '手動確認'">
                         <span class="mr-auto">手動確認</span>
                         <span class="badge badge-secondary">{{result.lowVision.problem.counts[3].toLocaleString()}}</span>
                       </button>
