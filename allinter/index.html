@@ -100,12 +100,70 @@
           <b-tabs pills card>
             <b-tab title="アクセシビリティ検証" active>
               <div v-if="hasHtmlCheckerResult()">
-                <b-table striped hover responsive sticky-header :items="result.htmlChecker.problem.items" :fields="result.htmlChecker.problem.fields"></b-table>
+                <div class="row">
+                  <div class="col-3">
+                    <div class="list-group">
+                      <button type="button" class="list-group-item list-group-item-action active">
+                        <span class="mr-auto">すべての項目</span>
+                        <span class="badge badge-secondary">{{result.htmlChecker.problem.items.length.toLocaleString()}}</span>
+                      </button>
+                      <hr>
+                      <button type="button" class="list-group-item list-group-item-action">
+                        <span class="mr-auto">問題あり</span>
+                        <span class="badge badge-secondary">{{result.htmlChecker.problem.counts[0].toLocaleString()}}</span>
+                      </button>
+                      <button type="button" class="list-group-item list-group-item-action">
+                        <span class="mr-auto">問題の可能性大</span>
+                        <span class="badge badge-secondary">{{result.htmlChecker.problem.counts[1].toLocaleString()}}</span>
+                      </button>
+                      <button type="button" class="list-group-item list-group-item-action">
+                        <span class="mr-auto">要判断箇所</span>
+                        <span class="badge badge-secondary">{{result.htmlChecker.problem.counts[2].toLocaleString()}}</span>
+                      </button>
+                      <button type="button" class="list-group-item list-group-item-action">
+                        <span class="mr-auto">手動確認</span>
+                        <span class="badge badge-secondary">{{result.htmlChecker.problem.counts[3].toLocaleString()}}</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="col-9">
+                    <b-table striped hover responsive sticky-header :items="result.htmlChecker.problem.items" :fields="result.htmlChecker.problem.fields"></b-table>
+                  </div>
+                </div>
               </div>
             </b-tab>
             <b-tab title="視覚化">
               <div v-if="hasLowVisionResult()">
-                <b-table striped hover responsive sticky-header :items="result.lowVision.problem.items" :fields="result.lowVision.problem.fields"></b-table>
+                <div class="row">
+                  <div class="col-3">
+                    <div class="list-group">
+                      <button type="button" class="list-group-item list-group-item-action active">
+                        <span class="mr-auto">すべての項目</span>
+                        <span class="badge badge-secondary">{{result.lowVision.problem.items.length.toLocaleString()}}</span>
+                      </button>
+                      <hr>
+                      <button type="button" class="list-group-item list-group-item-action">
+                        <span class="mr-auto">問題あり</span>
+                        <span class="badge badge-secondary">{{result.lowVision.problem.counts[0].toLocaleString()}}</span>
+                      </button>
+                      <button type="button" class="list-group-item list-group-item-action">
+                        <span class="mr-auto">問題の可能性大</span>
+                        <span class="badge badge-secondary">{{result.lowVision.problem.counts[1].toLocaleString()}}</span>
+                      </button>
+                      <button type="button" class="list-group-item list-group-item-action">
+                        <span class="mr-auto">要判断箇所</span>
+                        <span class="badge badge-secondary">{{result.lowVision.problem.counts[2].toLocaleString()}}</span>
+                      </button>
+                      <button type="button" class="list-group-item list-group-item-action">
+                        <span class="mr-auto">手動確認</span>
+                        <span class="badge badge-secondary">{{result.lowVision.problem.counts[3].toLocaleString()}}</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="col-9">
+                    <b-table striped hover responsive sticky-header :items="result.lowVision.problem.items" :fields="result.lowVision.problem.fields"></b-table>
+                  </div>
+                </div>
                 <div v-if="result.lowVision.sourceImage">
                   <img v-bind:src="result.lowVision.sourceImage" alt="source image"></img>
                 </div>
@@ -325,6 +383,22 @@
                     description: problem.description
                   };
                 });
+
+                this.result.htmlChecker.problem.counts = [ 0, 0, 0, 0 ];
+                ev.data.problems.forEach((problem, index) => {
+                  if (problem.severity & 1) {
+                    this.result.htmlChecker.problem.counts[0] += 1;
+                  }
+                  if (problem.severity & 2) {
+                    this.result.htmlChecker.problem.counts[1] += 1;
+                  }
+                  if (problem.severity & 4) {
+                    this.result.htmlChecker.problem.counts[2] += 1;
+                  }
+                  if (problem.severity & 8) {
+                    this.result.htmlChecker.problem.counts[3] += 1;
+                  }
+                });
                 break;
               case "allinter.lowVision.result":
                 this.result.lowVision.problem.items = Array.from(ev.data.problems, (problem, index) => {
@@ -346,6 +420,23 @@
                     description: problem.description,
                   };
                 });
+
+                this.result.lowVision.problem.counts = [ 0, 0, 0, 0 ];
+                ev.data.problems.forEach((problem, index) => {
+                  if (problem.severity & 1) {
+                    this.result.lowVision.problem.counts[0] += 1;
+                  }
+                  if (problem.severity & 2) {
+                    this.result.lowVision.problem.counts[1] += 1;
+                  }
+                  if (problem.severity & 4) {
+                    this.result.lowVision.problem.counts[2] += 1;
+                  }
+                  if (problem.severity & 8) {
+                    this.result.lowVision.problem.counts[3] += 1;
+                  }
+                });
+
                 this.result.lowVision.sourceImage = ev.data.sourceImageDataUrl;
                 this.result.lowVision.outputImage = ev.data.outputImageDataUrl;
                 break;
@@ -366,7 +457,9 @@
             if (typeof hostCallback !== "undefined") {
               this.validating = true;
               this.result.htmlChecker.problem.items = [];
+              this.result.htmlChecker.problem.counts = [ 0, 0, 0, 0 ];
               this.result.lowVision.problem.items = [];
+              this.result.lowVision.problem.counts = [ 0, 0, 0, 0 ];
               this.result.lowVision.sourceImage = "";
               this.result.lowVision.outputImage = "";
 
