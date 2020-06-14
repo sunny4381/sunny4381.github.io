@@ -53,14 +53,14 @@
   <div id="app">
     <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
       <h5 class="my-0 mr-md-auto font-weight-normal">allinter - html5 accessibility and low vision linter</h5>
-      <button type="button" class="btn btn-outline-secondary" id="btn-settings" data-toggle="modal" data-target="#setting-modal">
+      <b-button variant="outline-secondary" data-toggle="modal" data-target="#setting-modal">
         <b-icon-gear></b-icon-gear>
         設定
-      </button>
-      <button type="button" class="btn btn-secondary ml-2" @click="quitApplication">
+      </b-button>
+      <b-button variant="outline-danger" class="ml-2" @click="quitApplication">
         <b-icon-power></b-icon-power>
         終了
-      </button>
+      </b-button>
     </div>
 
     <div class="modal fade" id="setting-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -105,29 +105,29 @@
               <div v-if="hasHtmlCheckerResult()">
                 <div class="row">
                   <div class="col-3">
-                    <div class="list-group">
-                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: !result.htmlChecker.problem.filter }" v-on:click="result.htmlChecker.problem.filter = null">
-                        <span class="mr-auto">すべての項目</span>
-                        <span class="badge badge-secondary">{{result.htmlChecker.problem.items.length.toLocaleString()}}</span>
-                      </button>
+                    <b-list-group>
+                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="!result.htmlChecker.problem.filter" v-on:click="result.htmlChecker.problem.filter = null">
+                        すべての項目
+                        <b-badge variant="light">{{result.htmlChecker.problem.items.length.toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
+                      </b-list-group-item>
                       <hr>
-                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: result.htmlChecker.problem.filter === '問題あり' }" v-on:click="result.htmlChecker.problem.filter = '問題あり'">
-                        <span class="mr-auto">問題あり</span>
-                        <span class="badge badge-secondary">{{result.htmlChecker.problem.counts[0].toLocaleString()}}</span>
-                      </button>
-                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: result.htmlChecker.problem.filter === '問題の可能性大' }" v-on:click="result.htmlChecker.problem.filter = '問題の可能性大'">
-                        <span class="mr-auto">問題の可能性大</span>
-                        <span class="badge badge-secondary">{{result.htmlChecker.problem.counts[1].toLocaleString()}}</span>
-                      </button>
-                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: result.htmlChecker.problem.filter === '要判断箇所' }" v-on:click="result.htmlChecker.problem.filter = '要判断箇所'">
-                        <span class="mr-auto">要判断箇所</span>
-                        <span class="badge badge-secondary">{{result.htmlChecker.problem.counts[2].toLocaleString()}}</span>
-                      </button>
-                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: result.htmlChecker.problem.filter === '手動確認' }" v-on:click="result.htmlChecker.problem.filter = '手動確認'">
-                        <span class="mr-auto">手動確認</span>
-                        <span class="badge badge-secondary">{{result.htmlChecker.problem.counts[3].toLocaleString()}}</span>
-                      </button>
-                    </div>
+                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.htmlChecker.problem.filter === '問題あり'" v-bind:disabled="result.htmlChecker.problem.counts[0] == 0" v-on:click="result.htmlChecker.problem.filter = '問題あり'">
+                        問題あり
+                        <b-badge variant="light">{{result.htmlChecker.problem.counts[0].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
+                      </b-list-group-item>
+                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.htmlChecker.problem.filter === '問題の可能性大'" v-bind:disabled="result.htmlChecker.problem.counts[1] == 0" v-on:click="result.htmlChecker.problem.filter = '問題の可能性大'">
+                        問題の可能性大
+                        <b-badge variant="light">{{result.htmlChecker.problem.counts[1].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
+                      </b-list-group-item>
+                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.htmlChecker.problem.filter === '要判断箇所'" v-bind:disabled="result.htmlChecker.problem.counts[2] == 0" v-on:click="result.htmlChecker.problem.filter = '要判断箇所'">
+                        要判断箇所
+                        <b-badge variant="light">{{result.htmlChecker.problem.counts[2].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
+                      </b-list-group-item>
+                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.htmlChecker.problem.filter === '手動確認'" v-bind:disabled="result.htmlChecker.problem.counts[3] == 0" v-on:click="result.htmlChecker.problem.filter = '手動確認'">
+                        手動確認
+                        <b-badge variant="light">{{result.htmlChecker.problem.counts[3].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
+                      </b-list-group-item>
+                    </b-list-group>
                   </div>
                   <div class="col-9">
                     <b-table striped hover responsive sticky-header :items="result.htmlChecker.problem.items" :fields="result.htmlChecker.problem.fields" :filter="result.htmlChecker.problem.filter" :filter-included-fields="result.htmlChecker.problem.filterOn">
@@ -145,29 +145,29 @@
               <div v-if="hasLowVisionResult()">
                 <div class="row">
                   <div class="col-3">
-                    <div class="list-group">
-                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: !result.lowVision.problem.filter }" v-on:click="result.lowVision.problem.filter = null">
-                        <span class="mr-auto">すべての項目</span>
-                        <span class="badge badge-secondary">{{result.lowVision.problem.items.length.toLocaleString()}}</span>
-                      </button>
+                    <b-list-group>
+                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="!result.lowVision.problem.filter" v-on:click="result.lowVision.problem.filter = null">
+                        すべての項目
+                        <b-badge variant="light">{{result.lowVision.problem.items.length.toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
+                      </b-list-group-item>
                       <hr>
-                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: result.lowVision.problem.filter === '問題あり' }" v-on:click="result.lowVision.problem.filter = '問題あり'">
-                        <span class="mr-auto">問題あり</span>
-                        <span class="badge badge-secondary">{{result.lowVision.problem.counts[0].toLocaleString()}}</span>
-                      </button>
-                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: result.lowVision.problem.filter === '問題の可能性大' }" v-on:click="result.lowVision.problem.filter = '問題の可能性大'">
-                        <span class="mr-auto">問題の可能性大</span>
-                        <span class="badge badge-secondary">{{result.lowVision.problem.counts[1].toLocaleString()}}</span>
-                      </button>
-                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: result.lowVision.problem.filter === '要判断箇所' }" v-on:click="result.lowVision.problem.filter = '要判断箇所'">
-                        <span class="mr-auto">要判断箇所</span>
-                        <span class="badge badge-secondary">{{result.lowVision.problem.counts[2].toLocaleString()}}</span>
-                      </button>
-                      <button type="button" class="list-group-item list-group-item-action" v-bind:class="{ active: result.lowVision.problem.filter === '手動確認' }" v-on:click="result.lowVision.problem.filter = '手動確認'">
-                        <span class="mr-auto">手動確認</span>
-                        <span class="badge badge-secondary">{{result.lowVision.problem.counts[3].toLocaleString()}}</span>
-                      </button>
-                    </div>
+                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.lowVision.problem.filter === '問題あり'" v-bind:disabled="result.lowVision.problem.counts[0] == 0" v-on:click="result.lowVision.problem.filter = '問題あり'">
+                        問題あり
+                        <b-badge variant="light">{{result.lowVision.problem.counts[0].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
+                      </b-list-group-item>
+                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.lowVision.problem.filter === '問題の可能性大'" v-bind:disabled="result.lowVision.problem.counts[1] == 0" v-on:click="result.lowVision.problem.filter = '問題の可能性大'">
+                        問題の可能性大
+                        <b-badge variant="light">{{result.lowVision.problem.counts[1].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
+                      </b-list-group-item>
+                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.lowVision.problem.filter === '要判断箇所'" v-bind:disabled="result.lowVision.problem.counts[2] == 0" v-on:click="result.lowVision.problem.filter = '要判断箇所'">
+                        要判断箇所
+                        <b-badge variant="light">{{result.lowVision.problem.counts[2].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
+                      </b-list-group-item>
+                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.lowVision.problem.filter === '手動確認'" v-bind:disabled="result.lowVision.problem.counts[3] == 0" v-on:click="result.lowVision.problem.filter = '手動確認'">
+                        手動確認
+                        <b-badge variant="light">{{result.lowVision.problem.counts[3].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
+                      </b-list-group-item>
+                    </b-list-group>
                   </div>
                   <div class="col-9">
                     <b-table striped hover responsive sticky-header :items="result.lowVision.problem.items" :fields="result.lowVision.problem.fields" :filter="result.lowVision.problem.filter" :filter-included-fields="result.lowVision.problem.filterOn">
