@@ -25,7 +25,7 @@
       min-width: 10em;
     }
     th.allinter-highlight-paths div {
-      min-width: 5em;
+      min-width: 10em;
     }
     th.allinter-description div {
       min-width: 30em;
@@ -39,6 +39,9 @@
     th.allinter-foreground div,
     th.allinter-background div {
       min-width: 7em;
+    }
+    .btn-allint-highlighter ~ .btn-allint-highlighter {
+      margin-left: 4px;
     }
   </style>
   <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
@@ -127,7 +130,13 @@
                     </div>
                   </div>
                   <div class="col-9">
-                    <b-table striped hover responsive sticky-header :items="result.htmlChecker.problem.items" :fields="result.htmlChecker.problem.fields" :filter="result.htmlChecker.problem.filter" :filter-included-fields="result.htmlChecker.problem.filterOn"></b-table>
+                    <b-table striped hover responsive sticky-header :items="result.htmlChecker.problem.items" :fields="result.htmlChecker.problem.fields" :filter="result.htmlChecker.problem.filter" :filter-included-fields="result.htmlChecker.problem.filterOn">
+                      <template v-slot:cell(highlightTargetPaths)="data">
+                        <span v-if="data.value && data.value.length > 0">
+                          <allint-highlighter v-for="path in data.value" v-bind:key="path.id" v-bind:path="path" v-on:highlight="highlightElement"></allint-highlighter>
+                        </span>
+                      </template>
+                    </b-table>
                   </div>
                 </div>
               </div>
@@ -161,7 +170,13 @@
                     </div>
                   </div>
                   <div class="col-9">
-                    <b-table striped hover responsive sticky-header :items="result.lowVision.problem.items" :fields="result.lowVision.problem.fields" :filter="result.lowVision.problem.filter" :filter-included-fields="result.lowVision.problem.filterOn"></b-table>
+                    <b-table striped hover responsive sticky-header :items="result.lowVision.problem.items" :fields="result.lowVision.problem.fields" :filter="result.lowVision.problem.filter" :filter-included-fields="result.lowVision.problem.filterOn">
+                      <template v-slot:cell(highlightTargetPaths)="data">
+                        <span v-if="data.value && data.value.length > 0">
+                          <allint-highlighter v-for="path in data.value" v-bind:key="path.id" v-bind:path="path" v-on:highlight="highlightElement"></allint-highlighter>
+                        </span>
+                      </template>
+                    </b-table>
                   </div>
                 </div>
                 <div v-if="result.lowVision.sourceImage">
@@ -182,6 +197,11 @@
     Vue.use(BootstrapVue);
     Vue.use(BootstrapVueIcons);
 
+    Vue.component("allint-highlighter", {
+      props: ['path'],
+      template: `<b-button size="sm" pill class="btn-allint-highlighter" :title="path.cssPath" v-on:click="$emit('highlight', path)">{{ path.id + 1 }}</b-button>`
+    });
+
     window.addEventListener("DOMContentLoaded", (ev) => {
       const app = new Vue({
         el: "#app",
@@ -197,6 +217,12 @@
                     label: "重度指数",
                     class: "allinter-severity",
                     sortable: true
+                  },
+                  {
+                    key: "highlightTargetPaths",
+                    label: "指摘箇所",
+                    class: "allinter-highlight-paths",
+                    sortable: false
                   },
                   {
                     key: "evaluationItem_tableDataMetrics0",
@@ -247,12 +273,6 @@
                     sortable: true
                   },
                   {
-                    key: "highlightTargetPaths",
-                    label: "指摘箇所",
-                    class: "allinter-highlight-paths",
-                    sortable: false
-                  },
-                  {
                     key: "description",
                     label: "内容",
                     class: "allinter-description",
@@ -273,6 +293,12 @@
                     label: "重度指数",
                     class: "allinter-severity",
                     sortable: true
+                  },
+                  {
+                    key: "highlightTargetPaths",
+                    label: "指摘箇所",
+                    class: "allinter-highlight-paths",
+                    sortable: false
                   },
                   // {
                   //   key: "iconTooltip",
@@ -385,7 +411,7 @@
                     evaluationItem_tableDataGuideline1: problem.evaluationItem["tableDataGuideline"][1],
                     evaluationItem_tableDataGuideline2: problem.evaluationItem["tableDataGuideline"][2],
                     evaluationItem_tableDataTechniques: problem.evaluationItem["tableDataTechniques"],
-                    highlightTargetPaths: "",
+                    highlightTargetPaths: problem.highlightTargetPaths && problem.highlightTargetPaths.length > 0 ? Array.from(problem.highlightTargetPaths, (highlightTargetPath, index) => { return { id: index, cssPath: highlightTargetPath.cssPath }; }) : [],
                     description: problem.description
                   };
                 });
@@ -423,6 +449,7 @@
                     y: problem.y,
                     area: problem.area,
                     evaluationItem_tableDataTechniques: problem.evaluationItem["tableDataTechniques"],
+                    highlightTargetPaths: problem.cssPath ? [ { id: 0, cssPath: problem.cssPath } ] : [],
                     description: problem.description,
                   };
                 });
@@ -487,6 +514,15 @@
           },
           hasLowVisionResult: function() {
             return (this.result.lowVision.problem && this.result.lowVision.problem.items && this.result.lowVision.problem.items.length > 0);
+          },
+          highlightElement: function(path) {
+            if (! path || !path.cssPath) {
+              return;
+            }
+
+            if (typeof hostCallback !== "undefined") {
+              hostCallback(JSON.stringify({ name: "highlight", payload: { cssPath: path.cssPath } }));
+            }
           }
         }
       });
