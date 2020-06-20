@@ -208,6 +208,7 @@
         data: {
           url: "",
           validating: false,
+          tabId: "",
           result: {
             htmlChecker: {
               problem: {
@@ -397,6 +398,7 @@
             switch (ev.data.name) {
               case "allinter.completed":
                 this.validating = false;
+                this.tabId = ev.data.tabId;
                 break;
               case "allinter.htmlChecker.result":
                 this.result.htmlChecker.problem.items = Array.from(ev.data.problems, (problem, index) => {
@@ -489,6 +491,7 @@
 
             if (typeof hostCallback !== "undefined") {
               this.validating = true;
+              this.tabId = "";
               this.result.htmlChecker.problem.items = [];
               this.result.htmlChecker.problem.counts = [ 0, 0, 0, 0 ];
               this.result.htmlChecker.problem.filter = null;
@@ -521,7 +524,7 @@
             }
 
             if (typeof hostCallback !== "undefined") {
-              hostCallback(JSON.stringify({ name: "highlight", payload: { cssPath: path.cssPath } }));
+              hostCallback(JSON.stringify({ name: "highlight", payload: { tabId: this.tabId, cssPath: path.cssPath } }));
             }
           }
         }
