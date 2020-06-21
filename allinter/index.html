@@ -203,7 +203,14 @@
     });
 
     var lastTag = function(cssPath) {
-      return cssPath.split(" ").pop().replace(/^(.+)(#|\.|:).*$/, '$1');
+      const lastComponent = cssPath.split(" > ").pop().trim();
+      const indexes = [ "#", ".", ":" ].map(str => lastComponent.indexOf(str, 1));
+      const lastIndex = Math.max(...indexes)
+      if (lastIndex === -1) {
+        return lastComponent;
+      }
+
+      return lastComponent.slice(0, lastIndex);
     }
 
     window.addEventListener("DOMContentLoaded", (ev) => {
