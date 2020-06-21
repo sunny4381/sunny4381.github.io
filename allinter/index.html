@@ -199,8 +199,12 @@
 
     Vue.component("allint-highlighter", {
       props: ['path'],
-      template: `<b-button size="sm" pill class="btn-allint-highlighter" :title="path.cssPath" v-on:click="$emit('highlight', path)">{{ path.id + 1 }}</b-button>`
+      template: `<b-button size="sm" pill class="btn-allint-highlighter" :title="path.cssPath" v-on:click="$emit('highlight', path)">{{ path.lastTag }}</b-button>`
     });
+
+    var lastTag = function(cssPath) {
+      return cssPath.split(" ").pop().replace(/^(.+)(#|\.|:).*$/, '$1');
+    }
 
     window.addEventListener("DOMContentLoaded", (ev) => {
       const app = new Vue({
@@ -413,7 +417,13 @@
                     evaluationItem_tableDataGuideline1: problem.evaluationItem["tableDataGuideline"][1],
                     evaluationItem_tableDataGuideline2: problem.evaluationItem["tableDataGuideline"][2],
                     evaluationItem_tableDataTechniques: problem.evaluationItem["tableDataTechniques"],
-                    highlightTargetPaths: problem.highlightTargetPaths && problem.highlightTargetPaths.length > 0 ? Array.from(problem.highlightTargetPaths, (highlightTargetPath, index) => { return { id: index, cssPath: highlightTargetPath.cssPath }; }) : [],
+                    highlightTargetPaths: problem.highlightTargetPaths && problem.highlightTargetPaths.length > 0 ? Array.from(problem.highlightTargetPaths, (highlightTargetPath, index) => {
+                      return {
+                        id: index,
+                        cssPath: highlightTargetPath.cssPath,
+                        lastTag: lastTag(highlightTargetPath.cssPath)
+                      };
+                    }) : [],
                     description: problem.description
                   };
                 });
@@ -451,7 +461,7 @@
                     y: problem.y,
                     area: problem.area,
                     evaluationItem_tableDataTechniques: problem.evaluationItem["tableDataTechniques"],
-                    highlightTargetPaths: problem.cssPath ? [ { id: 0, cssPath: problem.cssPath } ] : [],
+                    highlightTargetPaths: problem.cssPath ? [ { id: 0, cssPath: problem.cssPath, lastTag: lastTag(problem.cssPath) } ] : [],
                     description: problem.description,
                   };
                 });
