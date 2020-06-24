@@ -57,7 +57,7 @@
   <div id="app">
     <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
       <h5 class="my-0 mr-md-auto font-weight-normal">allinter - html5 accessibility and low vision linter</h5>
-      <b-button variant="outline-secondary" data-toggle="modal" data-target="#setting-modal">
+      <b-button variant="outline-secondary" v-b-modal.setting-modal>
         <b-icon-gear></b-icon-gear>
         設定
       </b-button>
@@ -67,26 +67,50 @@
       </b-button>
     </div>
 
-    <div class="modal fade" id="setting-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">設定</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            アクセシビリティのオプションやロービジョンのオプションを設定できるようになる予定。<br>
-            開発中のため、現在は設定できない。
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
-            <button type="button" class="btn btn-primary">保存</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <b-modal id="setting-modal" title="設定" lazy ok-only size="lg">
+      <template v-slot:modal-ok>閉じる</template>
+
+      <b-container fluid>
+        <b-row>
+          <b-col cols="3">Eyesight</b-col>
+          <b-col>
+            <b-form-checkbox v-model="settings.lowVision.eyesight" name="low-vision-eyesight" switch />
+          </b-col>
+          <b-col cols="6">
+            <b-form-input v-model="settings.lowVision.eyesightDegree" name="low-vision-eyesight-degree" type="range" min="0.0" max="1.0" step="0.1" />
+          </b-col>
+          <b-col>
+            <span>{{settings.lowVision.eyesightDegree}}</span>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col cols="3">CVD</b-col>
+          <b-col>
+            <b-form-checkbox v-model="settings.lowVision.cvd" name="low-vision-cvd" switch />
+          </b-col>
+          <b-col cols="6">
+            <b-form-radio-group v-model="settings.lowVision.cvdType" name="low-vision-cvd-type">
+              <b-form-radio value="protan">第一色覚異常（赤色覚異常）</b-form-radio>
+              <b-form-radio value="deutan">第二色覚異常（緑色覚異常）</b-form-radio>
+              <b-form-radio value="tritan">第三色覚異常（青色覚異常）</b-form-radio>
+            </b-form-radio-group>
+          </b-col>
+          <b-col></b-col>
+        </b-row>
+        <b-row>
+          <b-col cols="3">Color Filter</b-col>
+          <b-col>
+            <b-form-checkbox v-model="settings.lowVision.colorFilter" name="low-vision-color-filter" switch />
+          </b-col>
+          <b-col cols="6">
+            <b-form-input v-model="settings.lowVision.colorFilterDegree" name="low-vision-color-filter-degree" type="range" min="0.0" max="1.0" step="0.1" />
+          </b-col>
+          <b-col>
+            <span>{{settings.lowVision.colorFilterDegree}}</span>
+          </b-col>
+        </b-row>
+      </b7-container>
+    </b-modal>
 
     <div class="container">
       <form v-on:submit.prevent="validatePage">
@@ -252,6 +276,16 @@
           validating: false,
           tabIndex: 0,
           browserTabId: "",
+          settings: {
+            lowVision: {
+              eyesight: true,
+              eyesightDegree: 0.5,
+              cvd: true,
+              cvdType: "deutan",
+              colorFilter: true,
+              colorFilterDegree: 0.8
+            }
+          },
           result: {
             htmlChecker: {
               problem: {
