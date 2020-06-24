@@ -43,7 +43,7 @@
     .btn-allint-highlighter ~ .btn-allint-highlighter {
       margin-left: 4px;
     }
-    .allinter-lowvision-image {
+    .allint-lowvision-image {
       width: 100%;
     }
   </style>
@@ -186,7 +186,32 @@
 
                 <div class="row">
                   <div class="col">
-                    <image-compare :before="result.lowVision.sourceImage" :after="result.lowVision.outputImage"/>
+                    <b-button-group size="sm">
+                      <b-button :pressed="result.lowVision.imageMode === 'source'" v-on:click="result.lowVision.imageMode = 'source'">
+                        <b-icon icon="square-half" flip-h />
+                      </b-button>
+                      <b-button :pressed="result.lowVision.imageMode === 'both'" v-on:click="result.lowVision.imageMode = 'both'">
+                        <b-icon icon="layout-split" />
+                      </b-button>
+                      <b-button :pressed="result.lowVision.imageMode === 'output'" v-on:click="result.lowVision.imageMode = 'output'">
+                        <b-icon icon="square-half" />
+                      </b-button>
+                    </b-button-group>
+                  </div>
+                </div>
+                <div class="row" v-if="result.lowVision.imageMode === 'source'">
+                  <div class="col">
+                    <b-img :src="result.lowVision.sourceImage" class="allint-lowvision-image" alt="source image" />
+                  </div>
+                </div>
+                <div class="row" v-if="result.lowVision.imageMode === 'output'">
+                  <div class="col">
+                    <b-img :src="result.lowVision.outputImage" class="allint-lowvision-image" alt="low vision image" />
+                  </div>
+                </div>
+                <div class="row" v-if="result.lowVision.imageMode === 'both'">
+                  <div class="col">
+                    <image-compare :before="result.lowVision.outputImage" :after="result.lowVision.sourceImage"/>
                   </div>
                 </div>
               </div> <!--div v-if="hasLowVisionResult()"> -->
@@ -398,7 +423,8 @@
                 filterOn: [ "severityStr" ]
               },
               sourceImage: "",
-              outputImage: ""
+              outputImage: "",
+              imageMode: "both"
             }
           }
         },
@@ -498,6 +524,7 @@
 
                 this.result.lowVision.sourceImage = ev.data.sourceImageDataUrl;
                 this.result.lowVision.outputImage = ev.data.outputImageDataUrl;
+                this.result.lowVision.imageMode = "both";
                 break;
             }
           });
@@ -526,6 +553,7 @@
               this.result.lowVision.problem.filterOn = [ "severityStr" ];
               this.result.lowVision.sourceImage = "";
               this.result.lowVision.outputImage = "";
+              this.result.lowVision.imageMode = "both";
 
               hostCallback(JSON.stringify({ name: "open", payload: { url: this.url } }));
               sessionStorage.setItem("lastUrl", this.url);
