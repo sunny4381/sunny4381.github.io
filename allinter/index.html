@@ -67,7 +67,7 @@
       </b-button>
     </div>
 
-    <b-modal id="setting-modal" title="設定" lazy ok-only size="lg">
+    <b-modal id="setting-modal" title="設定" lazy ok-only size="lg" v-on:ok="saveSettings">
       <template v-slot:modal-ok>閉じる</template>
 
       <b-container fluid>
@@ -474,6 +474,14 @@
             console.log({ on: "message", ev: ev, data: ev.data })
 
             switch (ev.data.name) {
+              case "allinter.settings":
+                this.settings.lowVision.eyesight = ev.data.lowVision.eyesight;
+                this.settings.lowVision.eyesightDegree = ev.data.lowVision.eyesightDegree;
+                this.settings.lowVision.cvd = ev.data.lowVision.cvd;
+                this.settings.lowVision.cvdType = ev.data.lowVision.cvdTypeName;
+                this.settings.lowVision.colorFilter = ev.data.lowVision.colorFilter;
+                this.settings.lowVision.colorFilterDegree = ev.data.lowVision.colorFilterDegree;
+                break;
               case "allinter.completed":
                 this.validating = false;
                 this.browserTabId = ev.data.tabId;
@@ -567,6 +575,10 @@
           if (lastUrl) {
             this.url = lastUrl;
           }
+
+          if (typeof hostCallback !== "undefined") {
+            hostCallback(JSON.stringify({ name: "syncSettings" }));
+          }
         },
         methods: {
           validatePage: function() {
@@ -611,6 +623,11 @@
 
             if (typeof hostCallback !== "undefined") {
               hostCallback(JSON.stringify({ name: "highlight", payload: { tabId: this.browserTabId, cssPath: path.cssPath } }));
+            }
+          },
+          saveSettings: function() {
+            if (typeof hostCallback !== "undefined") {
+              hostCallback(JSON.stringify({ name: "setSettings", payload: this.settings }));
             }
           }
         }
