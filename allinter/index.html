@@ -104,8 +104,8 @@
 
       <div class="mt-3">
         <b-card no-body>
-          <b-tabs pills card>
-            <b-tab title="アクセシビリティ検証" active>
+          <b-tabs pills card lazy v-model="tabIndex">
+            <b-tab title="アクセシビリティ検証">
               <div v-if="hasHtmlCheckerResult()">
                 <div class="row">
                   <div class="col-3">
@@ -225,7 +225,8 @@
         data: {
           url: "",
           validating: false,
-          tabId: "",
+          tabIndex: 0,
+          browserTabId: "",
           result: {
             htmlChecker: {
               problem: {
@@ -415,7 +416,7 @@
             switch (ev.data.name) {
               case "allinter.completed":
                 this.validating = false;
-                this.tabId = ev.data.tabId;
+                this.browserTabId = ev.data.tabId;
                 break;
               case "allinter.htmlChecker.result":
                 this.result.htmlChecker.problem.items = Array.from(ev.data.problems, (problem, index) => {
@@ -514,7 +515,7 @@
 
             if (typeof hostCallback !== "undefined") {
               this.validating = true;
-              this.tabId = "";
+              this.browserTabId = "";
               this.result.htmlChecker.problem.items = [];
               this.result.htmlChecker.problem.counts = [ 0, 0, 0, 0 ];
               this.result.htmlChecker.problem.filter = null;
@@ -547,7 +548,7 @@
             }
 
             if (typeof hostCallback !== "undefined") {
-              hostCallback(JSON.stringify({ name: "highlight", payload: { tabId: this.tabId, cssPath: path.cssPath } }));
+              hostCallback(JSON.stringify({ name: "highlight", payload: { tabId: this.browserTabId, cssPath: path.cssPath } }));
             }
           }
         }
