@@ -72,7 +72,7 @@
 
       <b-container fluid>
         <b-row>
-          <b-col cols="3">Eyesight</b-col>
+          <b-col cols="3">視力</b-col>
           <b-col>
             <b-form-checkbox v-model="settings.lowVision.eyesight" name="low-vision-eyesight" switch />
           </b-col>
@@ -84,7 +84,7 @@
           </b-col>
         </b-row>
         <b-row>
-          <b-col cols="3">CVD</b-col>
+          <b-col cols="3">色覚異常</b-col>
           <b-col>
             <b-form-checkbox v-model="settings.lowVision.cvd" name="low-vision-cvd" switch />
           </b-col>
@@ -98,18 +98,26 @@
           <b-col></b-col>
         </b-row>
         <b-row>
-          <b-col cols="3">Color Filter</b-col>
+          <b-col cols="3">水晶体透過率</b-col>
           <b-col>
             <b-form-checkbox v-model="settings.lowVision.colorFilter" name="low-vision-color-filter" switch />
           </b-col>
           <b-col cols="6">
-            <b-form-input v-model="settings.lowVision.colorFilterDegree" name="low-vision-color-filter-degree" type="range" min="0.0" max="1.0" step="0.1" />
+            <b-form-input v-model="settings.lowVision.colorFilterDegree" name="low-vision-color-filter-degree" type="range" min="0.6" max="1.0" step="0.05" />
           </b-col>
           <b-col>
             <span>{{settings.lowVision.colorFilterDegree}}</span>
           </b-col>
         </b-row>
-      </b7-container>
+        <b-row>
+          <b-col cols="3"></b-col>
+          <b-col></b-col>
+          <b-col cols="6">
+            0.6: 60歳代, 0.8: 40歳代, 1.0: 20歳代
+          </b-col>
+          <b-col></b-col>
+        </b-row>
+      </b-container>
     </b-modal>
 
     <div class="container">
