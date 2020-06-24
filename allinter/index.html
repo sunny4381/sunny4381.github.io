@@ -43,6 +43,9 @@
     .btn-allint-highlighter ~ .btn-allint-highlighter {
       margin-left: 4px;
     }
+    .allinter-lowvision-image {
+      width: 100%;
+    }
   </style>
   <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
   <script src="//unpkg.com/vue@2.6.11/dist/vue.min.js"></script>
@@ -179,11 +182,14 @@
                     </b-table>
                   </div>
                 </div>
-                <div v-if="result.lowVision.sourceImage">
-                  <img v-bind:src="result.lowVision.sourceImage" alt="source image"></img>
+              </div>
+
+              <div class="row">
+                <div class="col-6" v-if="result.lowVision.sourceImage">
+                  <img v-bind:src="result.lowVision.sourceImage" class="allinter-lowvision-image" alt="source image"></img>
                 </div>
-                <div v-if="result.lowVision.outputImage">
-                  <img v-bind:src="result.lowVision.outputImage" alt="output image"></img>
+                <div class="col-6" v-if="result.lowVision.outputImage">
+                  <img v-bind:src="result.lowVision.outputImage" class="allinter-lowvision-image" alt="output image"></img>
                 </div>
               </div>
             </b-tab>
