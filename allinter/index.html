@@ -55,7 +55,7 @@
 </head>
 <body>
   <div id="app">
-    <b-navbar toggleable="sm" class="border-bottom shadow-sm">
+    <b-navbar toggleable="sm" class="border-bottom shadow-sm mb-3">
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-navbar-brand href="#">allinter</b-navbar-brand>
       <b-collapse id="nav-collapse" is-nav>
@@ -129,18 +129,17 @@
     </b-modal>
 
     <div class="container">
-      <form v-on:submit.prevent="validatePage">
+      <b-form @submit.prevent="validatePage">
         <fieldset v-bind:disabled="validating">
-          <div class="form-group">
-            <label for="url">URL</label>
-            <input id="url" name="url" type="url" v-model="url" class="form-control" aria-describedby="url-help" v-bind:readonly="validating">
-            <small id="url-help" class="form-text text-muted">検証したい URL を入力し、「検証」ボタンをクリックしてください。</small>
-          </div>
+          <b-input-group prepend="URL">
+            <b-form-input type="url" v-model="url" v-bind:readonly="validating"></b-form-input>
+          </b-input-group>
+          <small id="url-help" class="form-text text-muted">検証したい URL を入力し、「検証」ボタンをクリックしてください。</small>
           <div class="d-flex justify-content-around">
             <button type="submit" class="btn btn-primary btn-lg"><b-icon-play></b-icon-play> 検証</button>
           </div>
         </fieldset>
-      </form>
+      </b-form>
 
       <div class="mt-3">
         <b-card no-body>
