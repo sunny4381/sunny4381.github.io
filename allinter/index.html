@@ -173,13 +173,36 @@
                     </b-list-group>
                   </div>
                   <div class="col-9">
-                    <b-table striped hover responsive sticky-header :items="result.htmlChecker.problem.items" :fields="result.htmlChecker.problem.fields" :filter="result.htmlChecker.problem.filter" :filter-included-fields="result.htmlChecker.problem.filterOn">
-                      <template v-slot:cell(highlightTargetPaths)="data">
-                        <span v-if="data.value && data.value.length > 0">
-                          <allint-highlighter v-for="path in data.value" v-bind:key="path.id" v-bind:path="path" v-on:highlight="highlightElement"></allint-highlighter>
-                        </span>
-                      </template>
-                    </b-table>
+                    <div class="row mb-1">
+                      <div class="col">
+                        <b-form class="float-sm-right" inline>
+                          <label class="sr-only" for="html-checker-search-keyword">検索文字列</label>
+                          <b-input-group class="mr-2">
+                            <b-input id="html-checker-search-keyword" placeholder="検索文字列"></b-input>
+                            <b-input-group-append>
+                              <b-button variant="secondary">
+                                <b-icon icon="search" /><span sr-only>検索</span>
+                              </b-button>
+                            </b-input-group-append>
+                          </b-input-group>
+
+                          <b-button variant="secondary">
+                            <b-icon icon="table" /><span sr-only>表示列設定</span>
+                          </b-button>
+                        </b-form>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col">
+                        <b-table striped hover responsive sticky-header :items="result.htmlChecker.problem.items" :fields="result.htmlChecker.problem.fields" :filter="result.htmlChecker.problem.filter" :filter-included-fields="result.htmlChecker.problem.filterOn">
+                          <template v-slot:cell(highlightTargetPaths)="data">
+                            <span v-if="data.value && data.value.length > 0">
+                              <allint-highlighter v-for="path in data.value" v-bind:key="path.id" v-bind:path="path" v-on:highlight="highlightElement"></allint-highlighter>
+                            </span>
+                          </template>
+                        </b-table>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
