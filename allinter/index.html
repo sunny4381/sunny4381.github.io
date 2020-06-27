@@ -55,17 +55,25 @@
 </head>
 <body>
   <div id="app">
-    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-      <h5 class="my-0 mr-md-auto font-weight-normal">allinter - html5 accessibility and low vision linter</h5>
-      <b-button variant="outline-secondary" v-b-modal.setting-modal>
-        <b-icon-gear></b-icon-gear>
-        設定
-      </b-button>
-      <b-button variant="outline-danger" class="ml-2" @click="quitApplication">
-        <b-icon-power></b-icon-power>
-        終了
-      </b-button>
-    </div>
+    <b-navbar toggleable="sm" class="border-bottom shadow-sm">
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+      <b-navbar-brand href="#">allinter</b-navbar-brand>
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav>
+          <b-nav-text>html5 accessibility and low vision linter</b-nav-text>
+        </b-navbar-nav>
+        <b-navbar-nav class="ml-auto">
+          <b-button variant="outline-secondary" v-b-modal.setting-modal>
+            <b-icon-gear></b-icon-gear>
+            設定
+          </b-button>
+          <b-button variant="outline-danger" class="ml-2" @click="quitApplication">
+            <b-icon-power></b-icon-power>
+            終了
+          </b-button>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
 
     <b-modal id="setting-modal" title="設定" lazy ok-only size="lg" v-on:ok="saveSettings">
       <template v-slot:modal-ok>閉じる</template>
