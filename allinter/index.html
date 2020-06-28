@@ -187,10 +187,19 @@
                           </b-input-group>
                         </b-form>
 
-                        <b-form class="ml-2" inline>
-                          <b-button type="submit" title="表示列設定" variant="secondary">
+                        <b-form class="ml-2" inline @submit.prevent="0;">
+                          <b-button type="submit" title="表示列設定" variant="secondary" v-b-modal.html-checker-column-setting-modal>
                             <b-icon icon="table" /><span sr-only>表示列設定</span>
                           </b-button>
+
+                          <b-modal id="html-checker-column-setting-modal" title="表示列設定" lazy v-on:ok="updateHtmlCheckerProblemFields">
+                            <b-container fluid>
+                              <b-row v-for="field in result.htmlChecker.problem.masterFields" :key="field.key">
+                                <b-col>{{ field.label }}</b-col>
+                                <b-col><b-form-checkbox v-model="field.visible" :name="field.key" switch>{{ field.visible ? "表示" : "非表示" }}</b-form-checkbox></b-col>
+                              </b-row>
+                            </b-container>
+                          </b-modal>
                         </b-form>
                       </div>
                     </div>
@@ -289,6 +298,7 @@
   </div> <!-- end of #app -->
 
   <script defer>
+    // vue settings
     Vue.use(BootstrapVue);
     Vue.use(BootstrapVueIcons);
     Vue.use(VueImageCompare);
@@ -298,7 +308,8 @@
       template: `<b-button size="sm" pill class="btn-allint-highlighter" :title="path.cssPath" v-on:click="$emit('highlight', path)">{{ path.lastTag }}</b-button>`
     });
 
-    var lastTag = function(cssPath) {
+    // private functions
+    const lastTag = function(cssPath) {
       const lastComponent = cssPath.split(" > ").pop().trim();
       const indexes = [ "#", ".", ":" ].map(str => lastComponent.indexOf(str, 1));
       const lastIndex = Math.max(...indexes)
@@ -307,6 +318,16 @@
       }
 
       return lastComponent.slice(0, lastIndex);
+    }
+
+    const sliceMap = function(obj, allowedKeys) {
+      const ret = {};
+
+      allowedKeys.forEach((key) => {
+        ret[key] = obj[key];
+      });
+
+      return ret;
     }
 
     window.addEventListener("DOMContentLoaded", (ev) => {
@@ -330,80 +351,91 @@
           result: {
             htmlChecker: {
               problem: {
-                fields: [
+                masterFields: [
                   {
                     key: "severityStr",
                     label: "重度指数",
                     class: "allinter-severity",
-                    sortable: true
+                    sortable: true,
+                    visible: true
                   },
                   {
                     key: "highlightTargetPaths",
                     label: "指摘箇所",
                     class: "allinter-highlight-paths",
-                    sortable: false
+                    sortable: false,
+                    visible: true
                   },
                   {
                     key: "evaluationItem_tableDataMetrics0",
                     label: "知覚可能",
                     class: "allinter-metric0",
-                    sortable: true
+                    sortable: true,
+                    visible: false
                   },
                   {
                     key: "evaluationItem_tableDataMetrics1",
                     label: "操作可能",
                     class: "allinter-metric1",
-                    sortable: true
+                    sortable: true,
+                    visible: false
                   },
                   {
                     key: "evaluationItem_tableDataMetrics2",
                     label: "理解可能",
                     class: "allinter-metric2",
-                    sortable: true
+                    sortable: true,
+                    visible: false
                   },
                   {
                     key: "evaluationItem_tableDataMetrics3",
                     label: "堅牢",
                     class: "allinter-metric3",
-                    sortable: true
+                    sortable: true,
+                    visible: false
                   },
                   {
                     key: "evaluationItem_tableDataGuideline0",
                     label: "WCAG 2.0",
                     class: "allinter-guideline0",
-                    sortable: true
+                    sortable: true,
+                    visible: true
                   },
                   {
                     key: "evaluationItem_tableDataGuideline1",
                     label: "Section508",
                     class: "allinter-guideline1",
-                    sortable: true
+                    sortable: true,
+                    visible: true
                   },
                   {
                     key: "evaluationItem_tableDataGuideline2",
                     label: "JIS",
                     class: "allinter-guideline2",
-                    sortable: true
+                    sortable: true,
+                    visible: true
                   },
                   {
                     key: "evaluationItem_tableDataTechniques",
                     label: "達成方法",
                     class: "allinter-techniques",
-                    sortable: true
+                    sortable: true,
+                    visible: true
                   },
                   {
                     key: "description",
                     label: "内容",
                     class: "allinter-description",
-                    sortable: false
+                    sortable: false,
+                    visible: true
                   }
                 ],
+                fields: [],
                 items: [],
                 counts: [],
                 filter: null,
                 filterText: null,
                 filterSeverity: null,
-                filterOn: [ "severityStr" ]
               }
             },
             lowVision: {
@@ -621,6 +653,8 @@
             this.url = lastUrl;
           }
 
+          this.updateHtmlCheckerProblemFields();
+
           if (typeof hostCallback !== "undefined") {
             hostCallback(JSON.stringify({ name: "syncSettings" }));
           }
@@ -637,7 +671,6 @@
               this.result.htmlChecker.problem.items = [];
               this.result.htmlChecker.problem.counts = [ 0, 0, 0, 0 ];
               this.result.htmlChecker.problem.filter = null;
-              this.result.htmlChecker.problem.filterOn = [ "severityStr" ];
               this.result.lowVision.problem.items = [];
               this.result.lowVision.problem.counts = [ 0, 0, 0, 0 ];
               this.result.lowVision.problem.filter = null;
@@ -708,6 +741,9 @@
             }
 
             return true;
+          },
+          updateHtmlCheckerProblemFields: function() {
+            this.result.htmlChecker.problem.fields = this.result.htmlChecker.problem.masterFields.filter(field => field.visible).map(field => sliceMap(field, [ "key", "label", "class", "sortable" ]));
           }
         }
       });
