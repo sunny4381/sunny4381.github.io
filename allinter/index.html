@@ -224,37 +224,72 @@
                 <div class="row">
                   <div class="col-3">
                     <b-list-group>
-                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="!result.lowVision.problem.filter" v-on:click="result.lowVision.problem.filter = null">
+                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="!result.lowVision.problem.filterSeverity" v-on:click="changeLowVisionFilterSeverity(null)">
                         すべての項目
                         <b-badge variant="light">{{result.lowVision.problem.items.length.toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
                       </b-list-group-item>
                       <hr>
-                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.lowVision.problem.filter === '問題あり'" v-bind:disabled="result.lowVision.problem.counts[0] == 0" v-on:click="result.lowVision.problem.filter = '問題あり'">
+                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.lowVision.problem.filterSeverity === '問題あり'" v-bind:disabled="result.lowVision.problem.counts[0] == 0" v-on:click="changeLowVisionFilterSeverity('問題あり')">
                         問題あり
                         <b-badge variant="light">{{result.lowVision.problem.counts[0].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
                       </b-list-group-item>
-                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.lowVision.problem.filter === '問題の可能性大'" v-bind:disabled="result.lowVision.problem.counts[1] == 0" v-on:click="result.lowVision.problem.filter = '問題の可能性大'">
+                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.lowVision.problem.filterSeverity === '問題の可能性大'" v-bind:disabled="result.lowVision.problem.counts[1] == 0" v-on:click="changeLowVisionFilterSeverity('問題の可能性大')">
                         問題の可能性大
                         <b-badge variant="light">{{result.lowVision.problem.counts[1].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
                       </b-list-group-item>
-                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.lowVision.problem.filter === '要判断箇所'" v-bind:disabled="result.lowVision.problem.counts[2] == 0" v-on:click="result.lowVision.problem.filter = '要判断箇所'">
+                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.lowVision.problem.filterSeverity === '要判断箇所'" v-bind:disabled="result.lowVision.problem.counts[2] == 0" v-on:click="changeLowVisionFilterSeverity('要判断箇所')">
                         要判断箇所
                         <b-badge variant="light">{{result.lowVision.problem.counts[2].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
                       </b-list-group-item>
-                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.lowVision.problem.filter === '手動確認'" v-bind:disabled="result.lowVision.problem.counts[3] == 0" v-on:click="result.lowVision.problem.filter = '手動確認'">
+                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.lowVision.problem.filterSeverity === '手動確認'" v-bind:disabled="result.lowVision.problem.counts[3] == 0" v-on:click="changeLowVisionFilterSeverity('手動確認')">
                         手動確認
                         <b-badge variant="light">{{result.lowVision.problem.counts[3].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
                       </b-list-group-item>
                     </b-list-group>
                   </div>
                   <div class="col-9">
-                    <b-table striped hover responsive sticky-header :items="result.lowVision.problem.items" :fields="result.lowVision.problem.fields" :filter="result.lowVision.problem.filter" :filter-included-fields="result.lowVision.problem.filterOn">
-                      <template v-slot:cell(highlightTargetPaths)="data">
-                        <span v-if="data.value && data.value.length > 0">
-                          <allint-highlighter v-for="path in data.value" v-bind:key="path.id" v-bind:path="path" v-on:highlight="highlightElement"></allint-highlighter>
-                        </span>
-                      </template>
-                    </b-table>
+                    <div class="row mb-1">
+                      <div class="col d-flex justify-content-end">
+                        <b-form inline @submit.prevent="updateLowVisionFilter">
+                          <label class="sr-only" for="low-vision-search-keyword">検索文字列</label>
+                          <b-input-group>
+                            <b-input id="low-vision-search-keyword" placeholder="検索文字列" v-model="result.lowVision.problem.filterText"></b-input>
+                            <b-input-group-append>
+                              <b-button type="submit" title="検索" variant="secondary">
+                                <b-icon icon="search" /><span sr-only>検索</span>
+                              </b-button>
+                            </b-input-group-append>
+                          </b-input-group>
+                        </b-form>
+
+                        <b-form class="ml-2" inline @submit.prevent="0;">
+                          <b-button type="submit" title="表示列設定" variant="secondary" v-b-modal.low-vision-column-setting-modal>
+                            <b-icon icon="table" /><span sr-only>表示列設定</span>
+                          </b-button>
+
+                          <b-modal id="low-vision-column-setting-modal" title="表示列設定" lazy v-on:ok="updateLowVisionProblemFields">
+                            <b-container fluid>
+                              <b-row v-for="field in result.lowVision.problem.masterFields" :key="field.key">
+                                <b-col>{{ field.label }}</b-col>
+                                <b-col><b-form-checkbox v-model="field.visible" :name="field.key" switch>{{ field.visible ? "表示" : "非表示" }}</b-form-checkbox></b-col>
+                              </b-row>
+                            </b-container>
+                          </b-modal>
+                        </b-form>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col">
+                        <b-table striped hover responsive sticky-header :items="result.lowVision.problem.items" :fields="result.lowVision.problem.fields" :filter="result.lowVision.problem.filter" :filter-function="filterLowVisionProblem">
+                          <template v-slot:cell(highlightTargetPaths)="data">
+                            <span v-if="data.value && data.value.length > 0">
+                              <allint-highlighter v-for="path in data.value" v-bind:key="path.id" v-bind:path="path" v-on:highlight="highlightElement"></allint-highlighter>
+                            </span>
+                          </template>
+                        </b-table>
+                      </div>
+                    </div>
                   </div>
                 </div> <!--div class="row"></div> -->
 
@@ -440,18 +475,20 @@
             },
             lowVision: {
               problem: {
-                fields: [
+                masterFields: [
                   {
                     key: "severityStr",
                     label: "重度指数",
                     class: "allinter-severity",
-                    sortable: true
+                    sortable: true,
+                    visible: true
                   },
                   {
                     key: "highlightTargetPaths",
                     label: "指摘箇所",
                     class: "allinter-highlight-paths",
-                    sortable: false
+                    sortable: false,
+                    visible: true
                   },
                   // {
                   //   key: "iconTooltip",
@@ -463,69 +500,81 @@
                     key: "evaluationItem_tableDataGuideline0",
                     label: "WCAG 2.0",
                     class: "allinter-guideline0",
-                    sortable: true
+                    sortable: true,
+                    visible: true
                   },
                   {
                     key: "evaluationItem_tableDataGuideline1",
                     label: "Section508",
                     class: "allinter-guideline1",
-                    sortable: true
+                    sortable: true,
+                    visible: true
                   },
                   {
                     key: "evaluationItem_tableDataGuideline2",
                     label: "JIS",
                     class: "allinter-guideline2",
-                    sortable: true
+                    sortable: true,
+                    visible: true
                   },
                   {
                     key: "severityLV",
                     label: "深刻度",
                     class: "allinter-severity-lv",
-                    sortable: true
+                    sortable: true,
+                    visible: false
                   },
                   {
                     key: "foreground",
                     label: "前景色",
                     class: "allinter-foreground",
-                    sortable: true
+                    sortable: true,
+                    visible: false
                   },
                   {
                     key: "background",
                     label: "背景色",
                     class: "allinter-background",
-                    sortable: true
+                    sortable: true,
+                    visible: false
                   },
                   {
                     key: "x",
                     label: "X座標",
                     class: "allinter-x",
-                    sortable: true
+                    sortable: true,
+                    visible: false
                   },
                   {
                     key: "y",
                     label: "Y座標",
                     class: "allinter-y",
-                    sortable: true
+                    sortable: true,
+                    visible: false
                   },
                   {
                     key: "area",
                     label: "面積",
                     class: "allinter-area",
-                    sortable: true
+                    sortable: true,
+                    visible: false
                   },
                   {
                     key: "evaluationItem_tableDataTechniques",
                     label: "達成方法",
                     class: "allinter-techniques",
-                    sortable: true
+                    sortable: true,
+                    visible: true
                   },
                   {
                     key: "description",
                     label: "内容",
                     class: "allinter-description",
-                    sortable: true
+                    sortable: true,
+                    visible: true
                   },
                 ],
+                fields: [],
                 items: [],
                 counts: [],
                 filter: null,
@@ -654,6 +703,7 @@
           }
 
           this.updateHtmlCheckerProblemFields();
+          this.updateLowVisionProblemFields();
 
           if (typeof hostCallback !== "undefined") {
             hostCallback(JSON.stringify({ name: "syncSettings" }));
@@ -744,6 +794,41 @@
           },
           updateHtmlCheckerProblemFields: function() {
             this.result.htmlChecker.problem.fields = this.result.htmlChecker.problem.masterFields.filter(field => field.visible).map(field => sliceMap(field, [ "key", "label", "class", "sortable" ]));
+          },
+          updateLowVisionFilter: function() {
+            const filters = [];
+            if (this.result.lowVision.problem.filterText && this.result.lowVision.problem.filterText.trim()) {
+              filters.push(this.result.lowVision.problem.filterText.trim());
+            }
+            if (this.result.lowVision.problem.filterSeverity && this.result.lowVision.problem.filterSeverity.trim()) {
+              filters.push(this.result.lowVision.problem.filterSeverity.trim());
+            }
+
+            this.result.lowVision.problem.filter = filters.join(" ");
+          },
+          changeLowVisionFilterSeverity: function(severity) {
+            this.result.lowVision.problem.filterSeverity = severity;
+            this.updateLowVisionFilter();
+          },
+          filterLowVisionProblem: function(row, filter) {
+            if (this.result.lowVision.problem.filterText && this.result.lowVision.problem.filterText.trim()) {
+              // search in description
+              if (! row.description.includes(this.result.lowVision.problem.filterText.trim())) {
+                return false;
+              }
+            }
+
+            if (this.result.lowVision.problem.filterSeverity && this.result.lowVision.problem.filterSeverity.trim()) {
+              // match with severity
+              if (row.severityStr !== this.result.lowVision.problem.filterSeverity.trim()) {
+                return false;
+              }
+            }
+
+            return true;
+          },
+          updateLowVisionProblemFields: function() {
+            this.result.lowVision.problem.fields = this.result.lowVision.problem.masterFields.filter(field => field.visible).map(field => sliceMap(field, [ "key", "label", "class", "sortable" ]));
           }
         }
       });
