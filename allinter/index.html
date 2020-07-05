@@ -283,6 +283,12 @@
                             </b-container>
                           </b-modal>
                         </b-form>
+
+                        <b-form class="ml-2" inline @submit.prevent="downloadLowVisionCsv">
+                          <b-button type="submit" title="ダウンロード" variant="secondary">
+                            <b-icon icon="download" /><span sr-only>ダウンロード</span>
+                          </b-button>
+                        </b-form>
                       </div>
                     </div>
 
@@ -893,6 +899,44 @@
           },
           updateLowVisionProblemFields: function() {
             this.result.lowVision.problem.fields = this.result.lowVision.problem.masterFields.filter(field => field.visible).map(field => sliceMap(field, [ "key", "label", "class", "sortable" ]));
+          },
+          downloadLowVisionCsv: function() {
+            const csv = [];
+            const terms = [];
+
+            csv.push(Array.from(this.result.lowVision.problem.masterFields, (field) => field.label).join(","));
+            this.result.lowVision.problem.items.forEach((item) => {
+              terms.length = 0;
+
+              // 重度指数 (severityStr)
+              terms.push(escapeCsv(item.severityStr));
+              // 指摘箇所 (highlightTargetPaths)
+              terms.push(escapeCsv(Array.from(item.highlightTargetPaths, (highlightTargetPath) => highlightTargetPath.cssPath).join("\n")));
+              // WCAG 2.0 ~ JIS (evaluationItem_tableDataGuideline0 ~ evaluationItem_tableDataGuideline2)
+              terms.push(escapeCsv(item.evaluationItem_tableDataGuideline0));
+              terms.push(escapeCsv(item.evaluationItem_tableDataGuideline1));
+              terms.push(escapeCsv(item.evaluationItem_tableDataGuideline2));
+              // 深刻度 (severityLV)
+              terms.push(escapeCsv(item.severityLV.toString()));
+              // 前景色 (foreground)
+              terms.push(escapeCsv(item.foreground));
+              // 背景色 (background)
+              terms.push(escapeCsv(item.background));
+              // X座標 (x)
+              terms.push(escapeCsv(item.x.toString()));
+              // Y座標 (y)
+              terms.push(escapeCsv(item.y.toString()));
+              // 面積 (area)
+              terms.push(escapeCsv(item.area.toString()));
+              // 達成方法 (evaluationItem_tableDataTechniques)
+              terms.push(escapeCsv(item.evaluationItem_tableDataTechniques));
+              // 内容 (description)
+              terms.push(escapeCsv(item.description));
+
+              csv.push(terms.join(","));
+            });
+
+            download(csv, `low-vision-${moment().format("YYYY-MM-DD")}.csv`);
           }
         }
       });
