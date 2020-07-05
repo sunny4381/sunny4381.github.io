@@ -52,6 +52,7 @@
   <script src="//unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue.min.js"></script>
   <script src="//unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue-icons.min.js"></script>
   <script src="//unpkg.com/vue-image-compare@0.6.1/dist/vue-image-compare.min.js"></script>
+  <script src="//unpkg.com/moment@2.27.0/min/moment.min.js"></script>
 </head>
 <body>
   <div id="app">
@@ -200,6 +201,12 @@
                               </b-row>
                             </b-container>
                           </b-modal>
+                        </b-form>
+
+                        <b-form class="ml-2" inline @submit.prevent="downloadHtmlCheckerCsv">
+                          <b-button type="submit" title="ダウンロード" variant="secondary">
+                            <b-icon icon="download" /><span sr-only>ダウンロード</span>
+                          </b-button>
                         </b-form>
                       </div>
                     </div>
@@ -363,6 +370,32 @@
       });
 
       return ret;
+    }
+
+    const escapeCsv = function(text) {
+      if (!text) {
+        return "";
+      }
+
+      if (text.includes("\"")) {
+        return "\"" + text.replace(/"/g, "\"\"") + "\"";
+      }
+
+      if (text.includes("\r") || text.includes("\n") || text.includes(",")) {
+        return "\"" + text + "\"";
+      }
+
+      return text;
+    }
+
+    const download = function(csvArray, filename) {
+      const blob = new Blob([ "\uFEFF" + csvArray.join("\r\n") ], { "type" : "text/csv; charset=UTF-8" });
+
+      const element = document.createElement("a");
+      element.href = window.URL.createObjectURL(blob);
+      element.download = filename
+
+      element.click();
     }
 
     window.addEventListener("DOMContentLoaded", (ev) => {
@@ -794,6 +827,37 @@
           },
           updateHtmlCheckerProblemFields: function() {
             this.result.htmlChecker.problem.fields = this.result.htmlChecker.problem.masterFields.filter(field => field.visible).map(field => sliceMap(field, [ "key", "label", "class", "sortable" ]));
+          },
+          downloadHtmlCheckerCsv: function() {
+            const csv = [];
+            const terms = [];
+
+            csv.push(Array.from(this.result.htmlChecker.problem.masterFields, (field) => field.label).join(","));
+            this.result.htmlChecker.problem.items.forEach((item) => {
+              terms.length = 0;
+
+              // 重度指数 (severityStr)
+              terms.push(escapeCsv(item.severityStr));
+              // 指摘箇所 (highlightTargetPaths)
+              terms.push(escapeCsv(Array.from(item.highlightTargetPaths, (highlightTargetPath) => highlightTargetPath.cssPath).join("\n")));
+              // 知覚可能 ~ 堅牢 (evaluationItem_tableDataMetrics0 ~ evaluationItem_tableDataMetrics3)
+              terms.push(escapeCsv(item.evaluationItem_tableDataMetrics0));
+              terms.push(escapeCsv(item.evaluationItem_tableDataMetrics1));
+              terms.push(escapeCsv(item.evaluationItem_tableDataMetrics2));
+              terms.push(escapeCsv(item.evaluationItem_tableDataMetrics3));
+              // WCAG 2.0 ~ JIS (evaluationItem_tableDataGuideline0 ~ evaluationItem_tableDataGuideline2)
+              terms.push(escapeCsv(item.evaluationItem_tableDataGuideline0));
+              terms.push(escapeCsv(item.evaluationItem_tableDataGuideline1));
+              terms.push(escapeCsv(item.evaluationItem_tableDataGuideline2));
+              // 達成方法 (evaluationItem_tableDataTechniques)
+              terms.push(escapeCsv(item.evaluationItem_tableDataTechniques));
+              // 内容 (description)
+              terms.push(escapeCsv(item.description));
+
+              csv.push(terms.join(","));
+            });
+
+            download(csv, `html-checker-${moment().format("YYYY-MM-DD")}.csv`);
           },
           updateLowVisionFilter: function() {
             const filters = [];
