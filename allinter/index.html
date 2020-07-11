@@ -149,29 +149,7 @@
               <div v-if="hasHtmlCheckerResult()">
                 <div class="row">
                   <div class="col-3">
-                    <b-list-group>
-                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="!result.htmlChecker.problem.filterSeverity" v-on:click="changeHtmlCheckerFilterSeverity(null)">
-                        すべての項目
-                        <b-badge variant="light">{{result.htmlChecker.problem.items.length.toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
-                      </b-list-group-item>
-                      <hr>
-                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.htmlChecker.problem.filterSeverity === '問題あり'" v-bind:disabled="result.htmlChecker.problem.counts[0] == 0" v-on:click="changeHtmlCheckerFilterSeverity('問題あり')">
-                        問題あり
-                        <b-badge variant="light">{{result.htmlChecker.problem.counts[0].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
-                      </b-list-group-item>
-                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.htmlChecker.problem.filterSeverity === '問題の可能性大'" v-bind:disabled="result.htmlChecker.problem.counts[1] == 0" v-on:click="changeHtmlCheckerFilterSeverity('問題の可能性大')">
-                        問題の可能性大
-                        <b-badge variant="light">{{result.htmlChecker.problem.counts[1].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
-                      </b-list-group-item>
-                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.htmlChecker.problem.filterSeverity === '要判断箇所'" v-bind:disabled="result.htmlChecker.problem.counts[2] == 0" v-on:click="changeHtmlCheckerFilterSeverity('要判断箇所')">
-                        要判断箇所
-                        <b-badge variant="light">{{result.htmlChecker.problem.counts[2].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
-                      </b-list-group-item>
-                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.htmlChecker.problem.filterSeverity === '手動確認'" v-bind:disabled="result.htmlChecker.problem.counts[3] == 0" v-on:click="changeHtmlCheckerFilterSeverity('手動確認')">
-                        手動確認
-                        <b-badge variant="light">{{result.htmlChecker.problem.counts[3].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
-                      </b-list-group-item>
-                    </b-list-group>
+                    <allint-severity-filter :counts="result.htmlChecker.problem.counts" :severity="result.htmlChecker.problem.filterSeverity" v-on:change-severity="changeHtmlCheckerFilterSeverity($event)"></allint-severity-filter>
                   </div>
                   <div class="col-9">
                     <div class="row mb-1">
@@ -231,28 +209,7 @@
                 <div class="row">
                   <div class="col-3">
                     <b-list-group>
-                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="!result.lowVision.problem.filterSeverity" v-on:click="changeLowVisionFilterSeverity(null)">
-                        すべての項目
-                        <b-badge variant="light">{{result.lowVision.problem.items.length.toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
-                      </b-list-group-item>
-                      <hr>
-                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.lowVision.problem.filterSeverity === '問題あり'" v-bind:disabled="result.lowVision.problem.counts[0] == 0" v-on:click="changeLowVisionFilterSeverity('問題あり')">
-                        問題あり
-                        <b-badge variant="light">{{result.lowVision.problem.counts[0].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
-                      </b-list-group-item>
-                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.lowVision.problem.filterSeverity === '問題の可能性大'" v-bind:disabled="result.lowVision.problem.counts[1] == 0" v-on:click="changeLowVisionFilterSeverity('問題の可能性大')">
-                        問題の可能性大
-                        <b-badge variant="light">{{result.lowVision.problem.counts[1].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
-                      </b-list-group-item>
-                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.lowVision.problem.filterSeverity === '要判断箇所'" v-bind:disabled="result.lowVision.problem.counts[2] == 0" v-on:click="changeLowVisionFilterSeverity('要判断箇所')">
-                        要判断箇所
-                        <b-badge variant="light">{{result.lowVision.problem.counts[2].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
-                      </b-list-group-item>
-                      <b-list-group-item button class="d-flex justify-content-between align-items-center" v-bind:active="result.lowVision.problem.filterSeverity === '手動確認'" v-bind:disabled="result.lowVision.problem.counts[3] == 0" v-on:click="changeLowVisionFilterSeverity('手動確認')">
-                        手動確認
-                        <b-badge variant="light">{{result.lowVision.problem.counts[3].toLocaleString()}} <span class="sr-only">の問題点</span></b-badge>
-                      </b-list-group-item>
-                    </b-list-group>
+                      <allint-severity-filter :counts="result.lowVision.problem.counts" :severity="result.lowVision.problem.filterSeverity" v-on:change-severity="changeLowVisionFilterSeverity($event)"></allint-severity-filter>
                   </div>
                   <div class="col-9">
                     <div class="row mb-1">
@@ -356,7 +313,10 @@
       template: `<b-button size="sm" pill class="btn-allint-highlighter" :title="path.cssPath" v-on:click="$emit('highlight', path)">{{ path.lastTag }}</b-button>`
     });
 
-    import { lastTag, sliceMap, escapeCsv, download } from "./util.js";
+    import SeverityFilter from "./severity-filter.js";
+    Vue.component("allint-severity-filter", SeverityFilter);
+
+    import { lastTag, sliceMap, escapeCsv, download, convertSeverityIdToName } from "./util.js";
 
     window.addEventListener("DOMContentLoaded", (ev) => {
       const app = new Vue({
@@ -778,7 +738,8 @@
 
             if (this.result.htmlChecker.problem.filterSeverity && this.result.htmlChecker.problem.filterSeverity.trim()) {
               // match with severity
-              if (row.severityStr !== this.result.htmlChecker.problem.filterSeverity.trim()) {
+              const severityStr = convertSeverityIdToName(this.result.htmlChecker.problem.filterSeverity)
+              if (row.severityStr !== severityStr) {
                 return false;
               }
             }
@@ -844,7 +805,8 @@
 
             if (this.result.lowVision.problem.filterSeverity && this.result.lowVision.problem.filterSeverity.trim()) {
               // match with severity
-              if (row.severityStr !== this.result.lowVision.problem.filterSeverity.trim()) {
+              const severityStr = convertSeverityIdToName(this.result.lowVision.problem.filterSeverity)
+              if (row.severityStr !== severityStr) {
                 return false;
               }
             }
