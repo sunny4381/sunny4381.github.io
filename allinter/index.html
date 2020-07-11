@@ -345,7 +345,7 @@
 
   </div> <!-- end of #app -->
 
-  <script defer>
+  <script type="module">
     // vue settings
     Vue.use(BootstrapVue);
     Vue.use(BootstrapVueIcons);
@@ -356,53 +356,7 @@
       template: `<b-button size="sm" pill class="btn-allint-highlighter" :title="path.cssPath" v-on:click="$emit('highlight', path)">{{ path.lastTag }}</b-button>`
     });
 
-    // private functions
-    const lastTag = function(cssPath) {
-      const lastComponent = cssPath.split(" > ").pop().trim();
-      const indexes = [ "#", ".", ":" ].map(str => lastComponent.indexOf(str, 1));
-      const lastIndex = Math.max(...indexes)
-      if (lastIndex === -1) {
-        return lastComponent;
-      }
-
-      return lastComponent.slice(0, lastIndex);
-    }
-
-    const sliceMap = function(obj, allowedKeys) {
-      const ret = {};
-
-      allowedKeys.forEach((key) => {
-        ret[key] = obj[key];
-      });
-
-      return ret;
-    }
-
-    const escapeCsv = function(text) {
-      if (!text) {
-        return "";
-      }
-
-      if (text.includes("\"")) {
-        return "\"" + text.replace(/"/g, "\"\"") + "\"";
-      }
-
-      if (text.includes("\r") || text.includes("\n") || text.includes(",")) {
-        return "\"" + text + "\"";
-      }
-
-      return text;
-    }
-
-    const download = function(csvArray, filename) {
-      const blob = new Blob([ "\uFEFF" + csvArray.join("\r\n") ], { "type" : "text/csv; charset=UTF-8" });
-
-      const element = document.createElement("a");
-      element.href = window.URL.createObjectURL(blob);
-      element.download = filename
-
-      element.click();
-    }
+    import { lastTag, sliceMap, escapeCsv, download } from "./util.js";
 
     window.addEventListener("DOMContentLoaded", (ev) => {
       const app = new Vue({
