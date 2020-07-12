@@ -719,10 +719,12 @@
             }
 
             if (this.result.htmlChecker.problem.filterSeverity && this.result.htmlChecker.problem.filterSeverity.trim()) {
-              // match with severity
-              const severityStr = convertSeverityIdToName(this.result.htmlChecker.problem.filterSeverity)
-              if (row.severityStr !== severityStr) {
-                return false;
+              if (this.result.htmlChecker.problem.filterSeverity !== "all") {
+                // match with severity
+                const severityStr = convertSeverityIdToName(this.result.htmlChecker.problem.filterSeverity)
+                if (row.severityStr !== severityStr) {
+                  return false;
+                }
               }
             }
 
@@ -786,10 +788,12 @@
             }
 
             if (this.result.lowVision.problem.filterSeverity && this.result.lowVision.problem.filterSeverity.trim()) {
-              // match with severity
-              const severityStr = convertSeverityIdToName(this.result.lowVision.problem.filterSeverity)
-              if (row.severityStr !== severityStr) {
-                return false;
+              if (this.result.lowVision.problem.filterSeverity !== "all") {
+                // match with severity
+                const severityStr = convertSeverityIdToName(this.result.lowVision.problem.filterSeverity)
+                if (row.severityStr !== severityStr) {
+                  return false;
+                }
               }
             }
 
