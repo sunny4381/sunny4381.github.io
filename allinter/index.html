@@ -171,11 +171,7 @@
                           </b-modal>
                         </b-form>
 
-                        <b-form class="ml-2" inline @submit.prevent="downloadHtmlCheckerCsv">
-                          <b-button type="submit" title="ダウンロード" variant="secondary">
-                            <b-icon icon="download" /><span sr-only>ダウンロード</span>
-                          </b-button>
-                        </b-form>
+                        <allint-download-form class="ml-2" @download="downloadHtmlCheckerCsv"></allint-download-form>
                       </div>
                     </div>
 
@@ -221,11 +217,7 @@
                           </b-modal>
                         </b-form>
 
-                        <b-form class="ml-2" inline @submit.prevent="downloadLowVisionCsv">
-                          <b-button type="submit" title="ダウンロード" variant="secondary">
-                            <b-icon icon="download" /><span sr-only>ダウンロード</span>
-                          </b-button>
-                        </b-form>
+                        <allint-download-form class="ml-2" @download="downloadLowVisionCsv"></allint-download-form>
                       </div>
                     </div>
 
@@ -298,6 +290,9 @@
 
     import KeywordSearchForm from "./keyword-search-form.js";
     Vue.component("allint-keyword-search-form", KeywordSearchForm);
+
+    import DownloadForm from "./download-form.js";
+    Vue.component("allint-download-form", DownloadForm);
 
     import { lastTag, sliceMap, escapeCsv, download, convertSeverityIdToName } from "./util.js";
 
