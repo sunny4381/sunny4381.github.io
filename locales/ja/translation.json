@@ -1,0 +1,10 @@
+{
+  "severity": {
+    "all": "すべての項目",
+    "essential": "問題あり",
+    "warning": "問題の可能性大",
+    "userCheck": "要判断箇所",
+    "info": "手動確認",
+    "countHtml": "{{text}} <span class=\"sr-only\">の問題点</span>"
+  }
+}

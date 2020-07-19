@@ -1,0 +1,11 @@
+{
+  "severity": {
+    "all": "All Items",
+    "essential": "Error",
+    "warning": "Probably Error",
+    "userCheck": "Need confirmation",
+    "info": "Human check",
+    "countHtml": "{{text}} <span class=\"sr-only\">problem</span>",
+    "countHtml_plural": "{{text}} <span class=\"sr-only\">problems</span>"
+  }
+}

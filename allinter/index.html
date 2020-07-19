@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>allinter | html5 accessibility and low vision linter</title>
-  <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap@4.5.0/dist/css/bootstrap.min.css" />
-  <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue.min.css" />
+  <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap@4.5.0/dist/css/bootstrap.min.css" />
+  <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue.min.css" />
   <style type="text/css">
     th.allinter-severity div {
       min-width: 8em;
@@ -47,12 +47,16 @@
       width: 100%;
     }
   </style>
-  <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
-  <script src="//unpkg.com/vue@2.6.11/dist/vue.min.js"></script>
-  <script src="//unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue.min.js"></script>
-  <script src="//unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue-icons.min.js"></script>
-  <script src="//unpkg.com/vue-image-compare@0.6.1/dist/vue-image-compare.min.js"></script>
-  <script src="//unpkg.com/moment@2.27.0/min/moment.min.js"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/vue@2.6.11/dist/vue.min.js"></script>
+  <script src="https://unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue.min.js"></script>
+  <script src="https://unpkg.com/bootstrap-vue@2.15.0/dist/bootstrap-vue-icons.min.js"></script>
+  <script src="https://unpkg.com/vue-image-compare@0.6.1/dist/vue-image-compare.min.js"></script>
+  <script src="https://unpkg.com/moment@2.27.0/min/moment.min.js"></script>
+  <script src="https://unpkg.com/i18next@19.6.2/dist/umd/i18next.min.js"></script>
+  <script src="https://unpkg.com/i18next-browser-languagedetector@5.0.0/dist/umd/i18nextBrowserLanguageDetector.min.js"></script>
+  <script src="https://unpkg.com/i18next-fetch-backend@3.0.0/dist/i18next-fetch-backend.umd.js"></script>
+  "
 </head>
 <body>
   <div id="app">
@@ -271,9 +275,34 @@
     import DownloadForm from "./download-form.js";
     Vue.component("allint-download-form", DownloadForm);
 
+    const promise1 = new Promise((resolve, reject) => {
+      i18next.use(i18nextBrowserLanguageDetector).use(I18nextFetchBackend).init({
+        fallbackLng: ['en', 'ja'],
+        preload: ['en', 'ja', 'zh'],
+        ns: [ 'translation' ],
+        defaultNS: 'translation',
+        backend: {
+          loadPath: '/locales/{{lng}}/{{ns}}.json'
+        }
+      }, (err, t) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+
+        resolve();
+      });
+    });
+
     import { lastTag, sliceMap, escapeCsv, download, convertSeverityIdToName } from "./util.js";
 
-    window.addEventListener("DOMContentLoaded", (ev) => {
+    const promise2 = new Promise((resolve, reject) => {
+      window.addEventListener("DOMContentLoaded", (ev) => {
+        resolve();
+      });
+    });
+
+    Promise.all([promise1, promise2]).then(() => {
       const app = new Vue({
         el: "#app",
         data: {
