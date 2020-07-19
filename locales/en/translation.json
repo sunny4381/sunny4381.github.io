@@ -1,11 +1,29 @@
 {
-  "severity": {
-    "all": "All Items",
-    "essential": "Error",
-    "warning": "Probably Error",
-    "userCheck": "Need confirmation",
-    "info": "Human check",
+  "severityFilter": {
     "countHtml": "{{text}} <span class=\"sr-only\">problem</span>",
     "countHtml_plural": "{{text}} <span class=\"sr-only\">problems</span>"
+  },
+  "columnSettingForm": {
+    "title": "Column Setting"
+  },
+  "downloadForm": {
+    "title": "Download"
+  },
+  "keywordSearchForm": {
+    "title": "Search",
+    "keywordInput": "Search Text"
+  },
+  "enum": {
+    "severities": {
+      "all": "All Items",
+      "essential": "Error",
+      "warning": "Probably Error",
+      "userCheck": "Need confirmation",
+      "info": "Human check"
+    },
+    "fieldStates": {
+      "show": "Show",
+      "hide": "Hide"
+    }
   }
 }

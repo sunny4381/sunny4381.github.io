@@ -1,8 +1,12 @@
 {
-  "severity": {
-    "all": "所有错误",
-    "essential": "错误",
-    "userCheck": "用户检查",
-    "info": "信息"
+  "severityFilter": {
+  },
+  "enum": {
+    "severities": {
+      "all": "所有错误",
+      "essential": "错误",
+      "userCheck": "用户检查",
+      "info": "信息"
+    }
   }
 }

@@ -1,10 +1,28 @@
 {
-  "severity": {
-    "all": "すべての項目",
-    "essential": "問題あり",
-    "warning": "問題の可能性大",
-    "userCheck": "要判断箇所",
-    "info": "手動確認",
+  "severityFilter": {
     "countHtml": "{{text}} <span class=\"sr-only\">の問題点</span>"
+  },
+  "columnSettingForm": {
+    "title": "表示列設定"
+  },
+  "downloadForm": {
+    "title": "ダウンロード"
+  },
+  "keywordSearchForm": {
+    "title": "検索",
+    "keywordInput": "検索文字列"
+  },
+  "enum": {
+    "severities": {
+      "all": "すべての項目",
+      "essential": "問題あり",
+      "warning": "問題の可能性大",
+      "userCheck": "要判断箇所",
+      "info": "手動確認"
+    },
+    "fieldStates": {
+      "show": "表示",
+      "hide": "非表示"
+    }
   }
 }

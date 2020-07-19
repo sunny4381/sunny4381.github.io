@@ -21,7 +21,7 @@ const SeverityFilterItem = {
   template: `
     <b-list-group-item button class="d-flex justify-content-between align-items-center" :active="active" :disabled="count === 0" @click="$emit('click')">
       {{severityName}}
-      <b-badge variant="light" v-html="i18next.t('severity.countHtml', { count: count, text: count.toLocaleString() })"></b-badge>
+      <b-badge variant="light" v-html="i18next.t('severityFilter.countHtml', { count: count, text: count.toLocaleString() })"></b-badge>
     </b-list-group-item>
   `
 };
@@ -48,12 +48,12 @@ export default {
   },
   template: `
     <b-list-group>
-      <allint-severity-filter-item :count="totalCount" severityId="all" :severityName="i18next.t('severity.all')" :active="selected === 'all'" @click="changeSeverity('all')" />
+      <allint-severity-filter-item :count="totalCount" severityId="all" :severityName="i18next.t('enum.severities.all')" :active="selected === 'all'" @click="changeSeverity('all')" />
       <hr>
-      <allint-severity-filter-item :count="counts[0]" severityId="essential" :severityName="i18next.t('severity.essential')" :active="selected === 'essential'" @click="changeSeverity('essential')" />
-      <allint-severity-filter-item :count="counts[1]" severityId="warning" :severityName="i18next.t('severity.warning')" :active="selected === 'warning'" @click="changeSeverity('warning')" />
-      <allint-severity-filter-item :count="counts[2]" severityId="userCheck" :severityName="i18next.t('severity.userCheck')" :active="selected === 'userCheck'" @click="changeSeverity('userCheck')" />
-      <allint-severity-filter-item :count="counts[3]" severityId="info" :severityName="i18next.t('severity.info')" :active="selected === 'info'" @click="changeSeverity('info')" />
+      <allint-severity-filter-item :count="counts[0]" severityId="essential" :severityName="i18next.t('enum.severities.essential')" :active="selected === 'essential'" @click="changeSeverity('essential')" />
+      <allint-severity-filter-item :count="counts[1]" severityId="warning" :severityName="i18next.t('enum.severities.warning')" :active="selected === 'warning'" @click="changeSeverity('warning')" />
+      <allint-severity-filter-item :count="counts[2]" severityId="userCheck" :severityName="i18next.t('enum.severities.userCheck')" :active="selected === 'userCheck'" @click="changeSeverity('userCheck')" />
+      <allint-severity-filter-item :count="counts[3]" severityId="info" :severityName="i18next.t('enum.severities.info')" :active="selected === 'info'" @click="changeSeverity('info')" />
     </b-list-group>
   `
 }
