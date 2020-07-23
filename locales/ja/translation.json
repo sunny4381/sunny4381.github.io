@@ -21,6 +21,11 @@
     "filter": "水晶体透過率",
     "filterDescription": "0.6: 60歳代, 0.8: 40歳代, 1.0: 20歳代"
   },
+  "mainForm": {
+    "url": "URL",
+    "validation": "検証",
+    "help": "検証したい URL を入力し、「検証」ボタンをクリックしてください。"
+  },
   "enum": {
     "severities": {
       "all": "すべての項目",

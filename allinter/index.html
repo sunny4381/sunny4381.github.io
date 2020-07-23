@@ -63,17 +63,7 @@
     <allint-navbar :setting="settings" @application-setting-change="saveSettings" @quit-application="quitApplication"></allint-navbar>
 
     <div class="container">
-      <b-form @submit.prevent="validatePage">
-        <fieldset v-bind:disabled="validating">
-          <b-input-group prepend="URL">
-            <b-form-input type="url" v-model="url" v-bind:readonly="validating"></b-form-input>
-          </b-input-group>
-          <small id="url-help" class="form-text text-muted">検証したい URL を入力し、「検証」ボタンをクリックしてください。</small>
-          <div class="d-flex justify-content-around">
-            <button type="submit" class="btn btn-primary btn-lg"><b-icon-play></b-icon-play> 検証</button>
-          </div>
-        </fieldset>
-      </b-form>
+      <allint-main-form :url="url" :validating="validating" @validate-page="validatePage($event);"></allint-main-form>
 
       <div class="mt-3">
         <b-card no-body>
@@ -206,6 +196,9 @@
 
     import Navbar from "./navbar.js";
     Vue.component("allint-navbar", Navbar);
+
+    import MainForm from "./main-form.js";
+    Vue.component("allint-main-form", MainForm);
 
     const promise1 = new Promise((resolve, reject) => {
       i18next.use(i18nextBrowserLanguageDetector).use(I18nextFetchBackend).init({
@@ -579,7 +572,10 @@
           }
         },
         methods: {
-          validatePage: function() {
+          validatePage: function(url) {
+            if (url) {
+              this.url = url;
+            }
             if (! this.url) {
               return;
             }
@@ -643,7 +639,6 @@
             this.updateHtmlCheckerFilter();
           },
           filterHtmlCheckerProblem: function(row, filter) {
-            //console.log({ method: "filterHtmlCheckerProblem", row: row, filter: filter });
             if (this.result.htmlChecker.problem.filterText && this.result.htmlChecker.problem.filterText.trim()) {
               // search in description
               if (! row.description.includes(this.result.htmlChecker.problem.filterText.trim())) {

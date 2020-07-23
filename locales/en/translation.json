@@ -22,6 +22,11 @@
     "filter": "ColorFilter",
     "filterDescription": "0.6: 60's, 0.8: 40's, 1.0: 20's"
   },
+  "mainForm": {
+    "url": "URL",
+    "validation": "Validate",
+    "help": "Put url to validate and press button below."
+  },
   "enum": {
     "severities": {
       "all": "All Items",
