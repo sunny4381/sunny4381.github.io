@@ -13,6 +13,15 @@
     "title": "Search",
     "keywordInput": "Search Text"
   },
+  "navbar": {
+    "setting": "Settings",
+    "quit": "Quit",
+    "close": "Close",
+    "eyesight": "EyeSight",
+    "cvd": "ColorVision",
+    "filter": "ColorFilter",
+    "filterDescription": "0.6: 60's, 0.8: 40's, 1.0: 20's"
+  },
   "enum": {
     "severities": {
       "all": "All Items",
@@ -24,6 +33,11 @@
     "fieldStates": {
       "show": "Show",
       "hide": "Hide"
+    },
+    "cvd": {
+      "protan": "Protan: Abnormality of red-sensitive cone pigment",
+      "deutan": "Deutan: Abnormality of green-sensitive cone pigment",
+      "tritan": "Tritan: Abnormality of blue-sensitive cone pigment"
     }
   }
 }

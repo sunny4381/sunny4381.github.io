@@ -60,78 +60,7 @@
 </head>
 <body>
   <div id="app">
-    <b-navbar toggleable="sm" class="border-bottom shadow-sm mb-3">
-      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-      <b-navbar-brand href="#">allinter</b-navbar-brand>
-      <b-collapse id="nav-collapse" is-nav>
-        <b-navbar-nav>
-          <b-nav-text>html5 accessibility and low vision linter</b-nav-text>
-        </b-navbar-nav>
-        <b-navbar-nav class="ml-auto">
-          <b-button variant="outline-secondary" v-b-modal.setting-modal>
-            <b-icon-gear></b-icon-gear>
-            設定
-          </b-button>
-          <b-button variant="outline-danger" class="ml-sm-2 mt-2 mt-sm-0" @click="quitApplication">
-            <b-icon-power></b-icon-power>
-            終了
-          </b-button>
-        </b-navbar-nav>
-      </b-collapse>
-    </b-navbar>
-
-    <b-modal id="setting-modal" title="設定" lazy ok-only size="lg" v-on:ok="saveSettings">
-      <template v-slot:modal-ok>閉じる</template>
-
-      <b-container fluid>
-        <b-row>
-          <b-col cols="3">視力</b-col>
-          <b-col>
-            <b-form-checkbox v-model="settings.lowVision.eyesight" name="low-vision-eyesight" switch />
-          </b-col>
-          <b-col cols="6">
-            <b-form-input v-model="settings.lowVision.eyesightDegree" name="low-vision-eyesight-degree" type="range" min="0.0" max="1.0" step="0.1" />
-          </b-col>
-          <b-col>
-            <span>{{settings.lowVision.eyesightDegree}}</span>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols="3">色覚異常</b-col>
-          <b-col>
-            <b-form-checkbox v-model="settings.lowVision.cvd" name="low-vision-cvd" switch />
-          </b-col>
-          <b-col cols="6">
-            <b-form-radio-group v-model="settings.lowVision.cvdType" name="low-vision-cvd-type">
-              <b-form-radio value="protan">第一色覚異常（赤色覚異常）</b-form-radio>
-              <b-form-radio value="deutan">第二色覚異常（緑色覚異常）</b-form-radio>
-              <b-form-radio value="tritan">第三色覚異常（青色覚異常）</b-form-radio>
-            </b-form-radio-group>
-          </b-col>
-          <b-col></b-col>
-        </b-row>
-        <b-row>
-          <b-col cols="3">水晶体透過率</b-col>
-          <b-col>
-            <b-form-checkbox v-model="settings.lowVision.colorFilter" name="low-vision-color-filter" switch />
-          </b-col>
-          <b-col cols="6">
-            <b-form-input v-model="settings.lowVision.colorFilterDegree" name="low-vision-color-filter-degree" type="range" min="0.6" max="1.0" step="0.05" />
-          </b-col>
-          <b-col>
-            <span>{{settings.lowVision.colorFilterDegree}}</span>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols="3"></b-col>
-          <b-col></b-col>
-          <b-col cols="6">
-            0.6: 60歳代, 0.8: 40歳代, 1.0: 20歳代
-          </b-col>
-          <b-col></b-col>
-        </b-row>
-      </b-container>
-    </b-modal>
+    <allint-navbar :setting="settings" @application-setting-change="saveSettings" @quit-application="quitApplication"></allint-navbar>
 
     <div class="container">
       <b-form @submit.prevent="validatePage">
@@ -274,6 +203,9 @@
 
     import DownloadForm from "./download-form.js";
     Vue.component("allint-download-form", DownloadForm);
+
+    import Navbar from "./navbar.js";
+    Vue.component("allint-navbar", Navbar);
 
     const promise1 = new Promise((resolve, reject) => {
       i18next.use(i18nextBrowserLanguageDetector).use(I18nextFetchBackend).init({

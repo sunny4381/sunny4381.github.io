@@ -12,6 +12,15 @@
     "title": "検索",
     "keywordInput": "検索文字列"
   },
+  "navbar": {
+    "setting": "設定",
+    "quit": "終了",
+    "close": "閉じる",
+    "eyesight": "視力",
+    "cvd": "色覚異常",
+    "filter": "水晶体透過率",
+    "filterDescription": "0.6: 60歳代, 0.8: 40歳代, 1.0: 20歳代"
+  },
   "enum": {
     "severities": {
       "all": "すべての項目",
@@ -23,6 +32,11 @@
     "fieldStates": {
       "show": "表示",
       "hide": "非表示"
+    },
+    "cvd": {
+      "protan": "第一色覚異常（赤色覚異常）",
+      "deutan": "第二色覚異常（緑色覚異常）",
+      "tritan": "第三色覚異常（青色覚異常）"
     }
   }
 }

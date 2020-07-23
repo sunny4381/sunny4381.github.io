@@ -1,12 +1,26 @@
 {
   "severityFilter": {
   },
+  "navbar": {
+    "setting": "设置Settings",
+    "quit": "Quit",
+    "close": "关闭",
+    "eyesight": "视力",
+    "cvd": "色觉异常",
+    "filter": "晶状体透过率",
+    "filterDescription": "0.6: 60来岁, 0.8: 40来岁, 1.0: 20来岁"
+  },
   "enum": {
     "severities": {
       "all": "所有错误",
       "essential": "错误",
       "userCheck": "用户检查",
       "info": "信息"
+    },
+    "cvd": {
+      "protan": "Protan：对红色素异常敏感",
+      "deutan": "Detan：对绿色素异常敏感",
+      "tritan": "Tritan: 对蓝色素异常敏感"
     }
   }
 }
