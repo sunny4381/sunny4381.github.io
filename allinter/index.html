@@ -83,10 +83,8 @@
     Vue.use(BootstrapVueIcons);
     Vue.use(VueImageCompare);
 
-    Vue.component("allint-highlighter", {
-      props: ['path'],
-      template: `<b-button size="sm" pill class="btn-allint-highlighter" :title="path.cssPath" v-on:click="$emit('highlight', path)">{{ path.lastTag }}</b-button>`
-    });
+    import Highlighter from "./highlighter.js";
+    Vue.component("allint-highlighter", Highlighter);
 
     import SeverityFilter from "./severity-filter.js";
     Vue.component("allint-severity-filter", SeverityFilter);
