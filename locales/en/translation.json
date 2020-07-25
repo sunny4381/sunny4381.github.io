@@ -28,7 +28,7 @@
     "help": "Put url to validate and press button below."
   },
   "problemTable": {
-    "severity": "Problem",
+    "severity": "Severity",
     "highlightPaths": "Highlight",
     "perceivable": "$t(enum.metrics.perceivable)",
     "operable": "$t(enum.metrics.operable)",
@@ -45,7 +45,7 @@
     "y": "Y",
     "area": "Area",
     "type": "Type",
-    "severityLV": "Severity"
+    "severityLV": "Severity Level"
   },
   "htmlCheckerTab": {
     "title": "Accessibility"

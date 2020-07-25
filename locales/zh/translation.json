@@ -18,7 +18,8 @@
     "background": "背景颜色",
     "x": "X",
     "y": "Y",
-    "area": "区域"
+    "area": "区域",
+    "type": "类型"
   },
   "htmlCheckerTab": {
     "title": "无障碍"
