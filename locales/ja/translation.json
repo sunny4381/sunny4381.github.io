@@ -27,7 +27,7 @@
     "help": "検証したい URL を入力し、「検証」ボタンをクリックしてください。"
   },
   "problemTable": {
-    "severity": "深刻度",
+    "severity": "問題の種類",
     "highlightPaths": "ハイライト",
     "perceivable": "$t(enum.metrics.perceivable)",
     "operable": "$t(enum.metrics.operable)",
@@ -42,10 +42,15 @@
     "background": "背景色",
     "x": "X座標",
     "y": "Y座標",
-    "area": "面積"
+    "area": "面積",
+    "type": "種類",
+    "severityLV": "深刻度"
   },
   "htmlCheckerTab": {
     "title": "アクセシビリティ検証"
+  },
+  "lowVisionTab": {
+    "title": "視覚化"
   },
   "enum": {
     "severities": {

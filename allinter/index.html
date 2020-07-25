@@ -69,41 +69,7 @@
           <b-tabs pills card lazy v-model="tabIndex">
             <allint-html-checker-tab :validating="validating" :problem="result.htmlCheckerProblemData"></allint-html-checker-tab>
 
-            <b-tab title="視覚化">
-              <div v-if="hasLowVisionResult()">
-                <div class="row">
-                  <div class="col-3">
-                    <b-list-group>
-                      <allint-severity-filter :counts="result.lowVision.problem.counts" :severity="result.lowVision.problem.filterSeverity" v-on:change-severity="changeLowVisionFilterSeverity($event)"></allint-severity-filter>
-                  </div>
-                  <div class="col-9">
-                    <div class="row mb-1">
-                      <div class="col d-flex justify-content-end">
-                        <allint-keyword-search-form :value="result.lowVision.problem.filterText" @search="this.result.lowVision.problem.filterText = $event; updateLowVisionFilter();"></allint-keyword-search-form>
-
-                        <allint-column-setting-form class="ml-2" :fields="result.lowVision.problem.masterFields" @column-setting-change="updateLowVisionProblemFields();"></allint-column-setting-form>
-
-                        <allint-download-form class="ml-2" @download="downloadLowVisionCsv"></allint-download-form>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col">
-                        <b-table striped hover responsive sticky-header :items="result.lowVision.problem.items" :fields="result.lowVision.problem.fields" :filter="result.lowVision.problem.filter" :filter-function="filterLowVisionProblem">
-                          <template v-slot:cell(highlightTargetPaths)="data">
-                            <span v-if="data.value && data.value.length > 0">
-                              <allint-highlighter v-for="path in data.value" v-bind:key="path.id" v-bind:path="path" v-on:highlight="highlightElement"></allint-highlighter>
-                            </span>
-                          </template>
-                        </b-table>
-                      </div>
-                    </div>
-                  </div>
-                </div> <!--div class="row"></div> -->
-
-                <allint-image-viewer :source="result.lowVision.sourceImage" :output="result.lowVision.outputImage"></allint-image-viewer>
-              </div> <!--div v-if="hasLowVisionResult()"> -->
-            </b-tab>
+            <allint-low-vision-tab :validating="validating" :problem="result.lowVisionProblemData"></allint-low-vision-tab>
           </b-tabs>
         </b-card>
       </div>
@@ -146,6 +112,9 @@
     import HtmlCheckerTab from "./html-checker-tab.js";
     Vue.component("allint-html-checker-tab", HtmlCheckerTab);
 
+    import LowVisionTab from "./low-vision-tab.js";
+    Vue.component("allint-low-vision-tab", LowVisionTab);
+
     const promise1 = new Promise((resolve, reject) => {
       i18next.use(i18nextBrowserLanguageDetector).use(I18nextFetchBackend).init({
         fallbackLng: ['en', 'ja'],
@@ -180,7 +149,6 @@
           url: "",
           validating: false,
           tabIndex: 0,
-          browserTabId: "",
           settings: {
             lowVision: {
               eyesight: true,
@@ -193,119 +161,7 @@
           },
           result: {
             htmlCheckerProblemData: {},
-            lowVision: {
-              problem: {
-                masterFields: [
-                  {
-                    key: "severityStr",
-                    label: "重度指数",
-                    class: "allinter-severity",
-                    sortable: true,
-                    visible: true
-                  },
-                  {
-                    key: "highlightTargetPaths",
-                    label: "指摘箇所",
-                    class: "allinter-highlight-paths",
-                    sortable: false,
-                    visible: true
-                  },
-                  // {
-                  //   key: "iconTooltip",
-                  //   label: "種類",
-                  //   class: "allinter-icon",
-                  //   sortable: true
-                  // },
-                  {
-                    key: "evaluationItem_tableDataGuideline0",
-                    label: "WCAG 2.0",
-                    class: "allinter-guideline0",
-                    sortable: true,
-                    visible: true
-                  },
-                  {
-                    key: "evaluationItem_tableDataGuideline1",
-                    label: "Section508",
-                    class: "allinter-guideline1",
-                    sortable: true,
-                    visible: true
-                  },
-                  {
-                    key: "evaluationItem_tableDataGuideline2",
-                    label: "JIS",
-                    class: "allinter-guideline2",
-                    sortable: true,
-                    visible: true
-                  },
-                  {
-                    key: "severityLV",
-                    label: "深刻度",
-                    class: "allinter-severity-lv",
-                    sortable: true,
-                    visible: false
-                  },
-                  {
-                    key: "foreground",
-                    label: "前景色",
-                    class: "allinter-foreground",
-                    sortable: true,
-                    visible: false
-                  },
-                  {
-                    key: "background",
-                    label: "背景色",
-                    class: "allinter-background",
-                    sortable: true,
-                    visible: false
-                  },
-                  {
-                    key: "x",
-                    label: "X座標",
-                    class: "allinter-x",
-                    sortable: true,
-                    visible: false
-                  },
-                  {
-                    key: "y",
-                    label: "Y座標",
-                    class: "allinter-y",
-                    sortable: true,
-                    visible: false
-                  },
-                  {
-                    key: "area",
-                    label: "面積",
-                    class: "allinter-area",
-                    sortable: true,
-                    visible: false
-                  },
-                  {
-                    key: "evaluationItem_tableDataTechniques",
-                    label: "達成方法",
-                    class: "allinter-techniques",
-                    sortable: true,
-                    visible: true
-                  },
-                  {
-                    key: "description",
-                    label: "内容",
-                    class: "allinter-description",
-                    sortable: true,
-                    visible: true
-                  },
-                ],
-                fields: [],
-                items: [],
-                counts: [],
-                filter: null,
-                filterText: null,
-                filterSeverity: null,
-                filterOn: [ "severityStr" ]
-              },
-              sourceImage: "",
-              outputImage: "",
-              imageMode: "both"
-            }
+            lowVisionProblemData: {},
           }
         },
         created: function() {
@@ -330,11 +186,11 @@
                 break;
               case "allinter.validating":
                 this.validating = false;
-                this.browserTabId = ev.data.tabId;
+                // this.browserTabId = ev.data.tabId;
                 break;
               case "allinter.completed":
                 this.validating = false;
-                this.browserTabId = ev.data.tabId;
+                // this.browserTabId = ev.data.tabId;
                 break;
               case "allinter.htmlChecker.result":
                 this.result.htmlCheckerProblemData = sliceMap(ev.data, [ "tabId", "url" ]);
@@ -346,46 +202,13 @@
                 });
                 break;
               case "allinter.lowVision.result":
-                this.result.lowVision.problem.items = Array.from(ev.data.problems, (problem, index) => {
-                  return {
-                    id: index,
-                    severityStr: problem.severityStr,
-                    iconTooltip: problem.iconTooltip,
-                    evaluationItem_tableDataGuideline0: problem.evaluationItem["tableDataGuideline"][0],
-                    evaluationItem_tableDataGuideline1: problem.evaluationItem["tableDataGuideline"][1],
-                    evaluationItem_tableDataGuideline2: problem.evaluationItem["tableDataGuideline"][2],
-                    evaluationItem_tableDataTechniques: problem.evaluationItem["tableDataTechniques"],
-                    severityLV: problem.severityLV,
-                    foreground: problem.foreground,
-                    background: problem.background,
-                    x: problem.x,
-                    y: problem.y,
-                    area: problem.area,
-                    evaluationItem_tableDataTechniques: problem.evaluationItem["tableDataTechniques"],
-                    highlightTargetPaths: problem.cssPath ? [ { id: 0, cssPath: problem.cssPath, lastTag: lastTag(problem.cssPath) } ] : [],
-                    description: problem.description,
-                  };
+                this.result.lowVisionProblemData = sliceMap(ev.data, [ "tabId", "url", "sourceImageDataUrl", "outputImageDataUrl" ]);
+                this.result.lowVisionProblemData.problems = Array.from(ev.data.problems, (problem) => {
+                  return sliceMap(problem, [
+                    "canHighlight", "description", "evaluationItem", "highlightTargetPaths", "lineStrMulti",
+                    "severity", "severityStr", "severityLV", "foreground", "background", "x", "y", "area", "cssPath"
+                  ]);
                 });
-
-                this.result.lowVision.problem.counts = [ 0, 0, 0, 0 ];
-                ev.data.problems.forEach((problem, index) => {
-                  if (problem.severity & 1) {
-                    this.result.lowVision.problem.counts[0] += 1;
-                  }
-                  if (problem.severity & 2) {
-                    this.result.lowVision.problem.counts[1] += 1;
-                  }
-                  if (problem.severity & 4) {
-                    this.result.lowVision.problem.counts[2] += 1;
-                  }
-                  if (problem.severity & 8) {
-                    this.result.lowVision.problem.counts[3] += 1;
-                  }
-                });
-
-                this.result.lowVision.sourceImage = ev.data.sourceImageDataUrl;
-                this.result.lowVision.outputImage = ev.data.outputImageDataUrl;
-                this.result.lowVision.imageMode = "both";
                 break;
             }
           });
@@ -394,9 +217,6 @@
           if (lastUrl) {
             this.url = lastUrl;
           }
-
-          // this.updateHtmlCheckerProblemFields();
-          this.updateLowVisionProblemFields();
 
           if (typeof hostCallback !== "undefined") {
             hostCallback(JSON.stringify({ name: "syncSettings" }));
@@ -413,15 +233,8 @@
 
             if (typeof hostCallback !== "undefined") {
               this.validating = true;
-              this.browserTabId = "";
               this.result.htmlCheckerProblemData = {};
-              this.result.lowVision.problem.items = [];
-              this.result.lowVision.problem.counts = [ 0, 0, 0, 0 ];
-              this.result.lowVision.problem.filter = null;
-              this.result.lowVision.problem.filterOn = [ "severityStr" ];
-              this.result.lowVision.sourceImage = "";
-              this.result.lowVision.outputImage = "";
-              this.result.lowVision.imageMode = "both";
+              this.result.lowVisionProblemData = {};
 
               hostCallback(JSON.stringify({ name: "open", payload: { url: this.url } }));
               sessionStorage.setItem("lastUrl", this.url);
@@ -432,99 +245,11 @@
               hostCallback(JSON.stringify({ name: "quit" }));
             }
           },
-          hasLowVisionResult: function() {
-            return (this.result.lowVision.problem && this.result.lowVision.problem.items && this.result.lowVision.problem.items.length > 0);
-          },
-          highlightElement: function(path) {
-            if (! path || !path.cssPath) {
-              return;
-            }
-
-            if (typeof hostCallback !== "undefined") {
-              hostCallback(JSON.stringify({ name: "highlight", payload: { tabId: this.browserTabId, cssPath: path.cssPath } }));
-            }
-          },
           saveSettings: function() {
             if (typeof hostCallback !== "undefined") {
               hostCallback(JSON.stringify({ name: "setSettings", payload: this.settings }));
             }
           },
-          updateLowVisionFilter: function() {
-            const filters = [];
-            if (this.result.lowVision.problem.filterText && this.result.lowVision.problem.filterText.trim()) {
-              filters.push(this.result.lowVision.problem.filterText.trim());
-            }
-            if (this.result.lowVision.problem.filterSeverity && this.result.lowVision.problem.filterSeverity.trim()) {
-              filters.push(this.result.lowVision.problem.filterSeverity.trim());
-            }
-
-            this.result.lowVision.problem.filter = filters.join(" ");
-          },
-          changeLowVisionFilterSeverity: function(severity) {
-            this.result.lowVision.problem.filterSeverity = severity;
-            this.updateLowVisionFilter();
-          },
-          filterLowVisionProblem: function(row, filter) {
-            if (this.result.lowVision.problem.filterText && this.result.lowVision.problem.filterText.trim()) {
-              // search in description
-              if (! row.description.includes(this.result.lowVision.problem.filterText.trim())) {
-                return false;
-              }
-            }
-
-            if (this.result.lowVision.problem.filterSeverity && this.result.lowVision.problem.filterSeverity.trim()) {
-              if (this.result.lowVision.problem.filterSeverity !== "all") {
-                // match with severity
-                const severityStr = convertSeverityIdToName(this.result.lowVision.problem.filterSeverity)
-                if (row.severityStr !== severityStr) {
-                  return false;
-                }
-              }
-            }
-
-            return true;
-          },
-          updateLowVisionProblemFields: function() {
-            this.result.lowVision.problem.fields = this.result.lowVision.problem.masterFields.filter(field => field.visible).map(field => sliceMap(field, [ "key", "label", "class", "sortable" ]));
-          },
-          downloadLowVisionCsv: function() {
-            const csv = [];
-            const terms = [];
-
-            csv.push(Array.from(this.result.lowVision.problem.masterFields, (field) => field.label).join(","));
-            this.result.lowVision.problem.items.forEach((item) => {
-              terms.length = 0;
-
-              // 重度指数 (severityStr)
-              terms.push(escapeCsv(item.severityStr));
-              // 指摘箇所 (highlightTargetPaths)
-              terms.push(escapeCsv(Array.from(item.highlightTargetPaths, (highlightTargetPath) => highlightTargetPath.cssPath).join("\n")));
-              // WCAG 2.0 ~ JIS (evaluationItem_tableDataGuideline0 ~ evaluationItem_tableDataGuideline2)
-              terms.push(escapeCsv(item.evaluationItem_tableDataGuideline0));
-              terms.push(escapeCsv(item.evaluationItem_tableDataGuideline1));
-              terms.push(escapeCsv(item.evaluationItem_tableDataGuideline2));
-              // 深刻度 (severityLV)
-              terms.push(escapeCsv(item.severityLV.toString()));
-              // 前景色 (foreground)
-              terms.push(escapeCsv(item.foreground));
-              // 背景色 (background)
-              terms.push(escapeCsv(item.background));
-              // X座標 (x)
-              terms.push(escapeCsv(item.x.toString()));
-              // Y座標 (y)
-              terms.push(escapeCsv(item.y.toString()));
-              // 面積 (area)
-              terms.push(escapeCsv(item.area.toString()));
-              // 達成方法 (evaluationItem_tableDataTechniques)
-              terms.push(escapeCsv(item.evaluationItem_tableDataTechniques));
-              // 内容 (description)
-              terms.push(escapeCsv(item.description));
-
-              csv.push(terms.join(","));
-            });
-
-            download(csv, `low-vision-${moment().format("YYYY-MM-DD")}.csv`);
-          }
         }
       });
     });
