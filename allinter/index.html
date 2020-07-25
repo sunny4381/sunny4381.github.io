@@ -56,7 +56,6 @@
   <script src="https://unpkg.com/i18next@19.6.2/dist/umd/i18next.min.js"></script>
   <script src="https://unpkg.com/i18next-browser-languagedetector@5.0.0/dist/umd/i18nextBrowserLanguageDetector.min.js"></script>
   <script src="https://unpkg.com/i18next-fetch-backend@3.0.0/dist/i18next-fetch-backend.umd.js"></script>
-  "
 </head>
 <body>
   <div id="app">
@@ -68,38 +67,8 @@
       <div class="mt-3">
         <b-card no-body>
           <b-tabs pills card lazy v-model="tabIndex">
-            <b-tab title="アクセシビリティ検証">
-              <div v-if="hasHtmlCheckerResult()">
-                <div class="row">
-                  <div class="col-3">
-                    <allint-severity-filter :counts="result.htmlChecker.problem.counts" :severity="result.htmlChecker.problem.filterSeverity" v-on:change-severity="changeHtmlCheckerFilterSeverity($event)"></allint-severity-filter>
-                  </div>
-                  <div class="col-9">
-                    <div class="row mb-1">
-                      <div class="col d-flex justify-content-end">
-                        <allint-keyword-search-form :value="result.htmlChecker.problem.filterText" @search="result.htmlChecker.problem.filterText = $event; updateHtmlCheckerFilter();"></allint-keyword-search-form>
+            <allint-html-checker-tab :validating="validating" :problem="result.htmlCheckerProblemData"></allint-html-checker-tab>
 
-                        <allint-column-setting-form class="ml-2" :fields="result.htmlChecker.problem.masterFields" @column-setting-change="updateHtmlCheckerProblemFields();"></allint-column-setting-form>
-
-                        <allint-download-form class="ml-2" @download="downloadHtmlCheckerCsv"></allint-download-form>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col">
-                        <b-table striped hover responsive sticky-header :items="result.htmlChecker.problem.items" :fields="result.htmlChecker.problem.fields" :filter="result.htmlChecker.problem.filter" :filter-function="filterHtmlCheckerProblem">
-                          <template v-slot:cell(highlightTargetPaths)="data">
-                            <span v-if="data.value && data.value.length > 0">
-                              <allint-highlighter v-for="path in data.value" v-bind:key="path.id" v-bind:path="path" v-on:highlight="highlightElement"></allint-highlighter>
-                            </span>
-                          </template>
-                        </b-table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </b-tab>
             <b-tab title="視覚化">
               <div v-if="hasLowVisionResult()">
                 <div class="row">
@@ -174,6 +143,9 @@
     import ImageViewer from "./image-viewer.js";
     Vue.component("allint-image-viewer", ImageViewer);
 
+    import HtmlCheckerTab from "./html-checker-tab.js";
+    Vue.component("allint-html-checker-tab", HtmlCheckerTab);
+
     const promise1 = new Promise((resolve, reject) => {
       i18next.use(i18nextBrowserLanguageDetector).use(I18nextFetchBackend).init({
         fallbackLng: ['en', 'ja'],
@@ -220,95 +192,7 @@
             }
           },
           result: {
-            htmlChecker: {
-              problem: {
-                masterFields: [
-                  {
-                    key: "severityStr",
-                    label: "重度指数",
-                    class: "allinter-severity",
-                    sortable: true,
-                    visible: true
-                  },
-                  {
-                    key: "highlightTargetPaths",
-                    label: "指摘箇所",
-                    class: "allinter-highlight-paths",
-                    sortable: false,
-                    visible: true
-                  },
-                  {
-                    key: "evaluationItem_tableDataMetrics0",
-                    label: "知覚可能",
-                    class: "allinter-metric0",
-                    sortable: true,
-                    visible: false
-                  },
-                  {
-                    key: "evaluationItem_tableDataMetrics1",
-                    label: "操作可能",
-                    class: "allinter-metric1",
-                    sortable: true,
-                    visible: false
-                  },
-                  {
-                    key: "evaluationItem_tableDataMetrics2",
-                    label: "理解可能",
-                    class: "allinter-metric2",
-                    sortable: true,
-                    visible: false
-                  },
-                  {
-                    key: "evaluationItem_tableDataMetrics3",
-                    label: "堅牢",
-                    class: "allinter-metric3",
-                    sortable: true,
-                    visible: false
-                  },
-                  {
-                    key: "evaluationItem_tableDataGuideline0",
-                    label: "WCAG 2.0",
-                    class: "allinter-guideline0",
-                    sortable: true,
-                    visible: true
-                  },
-                  {
-                    key: "evaluationItem_tableDataGuideline1",
-                    label: "Section508",
-                    class: "allinter-guideline1",
-                    sortable: true,
-                    visible: true
-                  },
-                  {
-                    key: "evaluationItem_tableDataGuideline2",
-                    label: "JIS",
-                    class: "allinter-guideline2",
-                    sortable: true,
-                    visible: true
-                  },
-                  {
-                    key: "evaluationItem_tableDataTechniques",
-                    label: "達成方法",
-                    class: "allinter-techniques",
-                    sortable: true,
-                    visible: true
-                  },
-                  {
-                    key: "description",
-                    label: "内容",
-                    class: "allinter-description",
-                    sortable: false,
-                    visible: true
-                  }
-                ],
-                fields: [],
-                items: [],
-                counts: [],
-                filter: null,
-                filterText: null,
-                filterSeverity: null,
-              }
-            },
+            htmlCheckerProblemData: {},
             lowVision: {
               problem: {
                 masterFields: [
@@ -444,48 +328,21 @@
                 this.settings.lowVision.colorFilter = ev.data.lowVision.colorFilter;
                 this.settings.lowVision.colorFilterDegree = ev.data.lowVision.colorFilterDegree;
                 break;
+              case "allinter.validating":
+                this.validating = false;
+                this.browserTabId = ev.data.tabId;
+                break;
               case "allinter.completed":
                 this.validating = false;
                 this.browserTabId = ev.data.tabId;
                 break;
               case "allinter.htmlChecker.result":
-                this.result.htmlChecker.problem.items = Array.from(ev.data.problems, (problem, index) => {
-                  return {
-                    id: index,
-                    severityStr: problem.severityStr,
-                    evaluationItem_tableDataMetrics0: problem.evaluationItem["tableDataMetrics"][0],
-                    evaluationItem_tableDataMetrics1: problem.evaluationItem["tableDataMetrics"][1],
-                    evaluationItem_tableDataMetrics2: problem.evaluationItem["tableDataMetrics"][2],
-                    evaluationItem_tableDataMetrics3: problem.evaluationItem["tableDataMetrics"][3],
-                    evaluationItem_tableDataGuideline0: problem.evaluationItem["tableDataGuideline"][0],
-                    evaluationItem_tableDataGuideline1: problem.evaluationItem["tableDataGuideline"][1],
-                    evaluationItem_tableDataGuideline2: problem.evaluationItem["tableDataGuideline"][2],
-                    evaluationItem_tableDataTechniques: problem.evaluationItem["tableDataTechniques"],
-                    highlightTargetPaths: problem.highlightTargetPaths && problem.highlightTargetPaths.length > 0 ? Array.from(problem.highlightTargetPaths, (highlightTargetPath, index) => {
-                      return {
-                        id: index,
-                        cssPath: highlightTargetPath.cssPath,
-                        lastTag: lastTag(highlightTargetPath.cssPath)
-                      };
-                    }) : [],
-                    description: problem.description
-                  };
-                });
-
-                this.result.htmlChecker.problem.counts = [ 0, 0, 0, 0 ];
-                ev.data.problems.forEach((problem, index) => {
-                  if (problem.severity & 1) {
-                    this.result.htmlChecker.problem.counts[0] += 1;
-                  }
-                  if (problem.severity & 2) {
-                    this.result.htmlChecker.problem.counts[1] += 1;
-                  }
-                  if (problem.severity & 4) {
-                    this.result.htmlChecker.problem.counts[2] += 1;
-                  }
-                  if (problem.severity & 8) {
-                    this.result.htmlChecker.problem.counts[3] += 1;
-                  }
+                this.result.htmlCheckerProblemData = sliceMap(ev.data, [ "tabId", "url" ]);
+                this.result.htmlCheckerProblemData.problems = Array.from(ev.data.problems, (problem) => {
+                  return sliceMap(problem, [
+                    "canHighlight", "description", "evaluationItem", "highlightTargetPaths", "lineStrMulti",
+                    "severity", "severityStr"
+                  ]);
                 });
                 break;
               case "allinter.lowVision.result":
@@ -538,7 +395,7 @@
             this.url = lastUrl;
           }
 
-          this.updateHtmlCheckerProblemFields();
+          // this.updateHtmlCheckerProblemFields();
           this.updateLowVisionProblemFields();
 
           if (typeof hostCallback !== "undefined") {
@@ -557,9 +414,7 @@
             if (typeof hostCallback !== "undefined") {
               this.validating = true;
               this.browserTabId = "";
-              this.result.htmlChecker.problem.items = [];
-              this.result.htmlChecker.problem.counts = [ 0, 0, 0, 0 ];
-              this.result.htmlChecker.problem.filter = null;
+              this.result.htmlCheckerProblemData = {};
               this.result.lowVision.problem.items = [];
               this.result.lowVision.problem.counts = [ 0, 0, 0, 0 ];
               this.result.lowVision.problem.filter = null;
@@ -577,9 +432,6 @@
               hostCallback(JSON.stringify({ name: "quit" }));
             }
           },
-          hasHtmlCheckerResult: function() {
-            return (this.result.htmlChecker.problem && this.result.htmlChecker.problem.items && this.result.htmlChecker.problem.items.length > 0);
-          },
           hasLowVisionResult: function() {
             return (this.result.lowVision.problem && this.result.lowVision.problem.items && this.result.lowVision.problem.items.length > 0);
           },
@@ -596,75 +448,6 @@
             if (typeof hostCallback !== "undefined") {
               hostCallback(JSON.stringify({ name: "setSettings", payload: this.settings }));
             }
-          },
-          updateHtmlCheckerFilter: function() {
-            const filters = [];
-            if (this.result.htmlChecker.problem.filterText && this.result.htmlChecker.problem.filterText.trim()) {
-              filters.push(this.result.htmlChecker.problem.filterText.trim());
-            }
-            if (this.result.htmlChecker.problem.filterSeverity && this.result.htmlChecker.problem.filterSeverity.trim()) {
-              filters.push(this.result.htmlChecker.problem.filterSeverity.trim());
-            }
-
-            this.result.htmlChecker.problem.filter = filters.join(" ");
-          },
-          changeHtmlCheckerFilterSeverity: function(severity) {
-            this.result.htmlChecker.problem.filterSeverity = severity;
-            this.updateHtmlCheckerFilter();
-          },
-          filterHtmlCheckerProblem: function(row, filter) {
-            if (this.result.htmlChecker.problem.filterText && this.result.htmlChecker.problem.filterText.trim()) {
-              // search in description
-              if (! row.description.includes(this.result.htmlChecker.problem.filterText.trim())) {
-                return false;
-              }
-            }
-
-            if (this.result.htmlChecker.problem.filterSeverity && this.result.htmlChecker.problem.filterSeverity.trim()) {
-              if (this.result.htmlChecker.problem.filterSeverity !== "all") {
-                // match with severity
-                const severityStr = convertSeverityIdToName(this.result.htmlChecker.problem.filterSeverity)
-                if (row.severityStr !== severityStr) {
-                  return false;
-                }
-              }
-            }
-
-            return true;
-          },
-          updateHtmlCheckerProblemFields: function() {
-            this.result.htmlChecker.problem.fields = this.result.htmlChecker.problem.masterFields.filter(field => field.visible).map(field => sliceMap(field, [ "key", "label", "class", "sortable" ]));
-          },
-          downloadHtmlCheckerCsv: function() {
-            const csv = [];
-            const terms = [];
-
-            csv.push(Array.from(this.result.htmlChecker.problem.masterFields, (field) => field.label).join(","));
-            this.result.htmlChecker.problem.items.forEach((item) => {
-              terms.length = 0;
-
-              // 重度指数 (severityStr)
-              terms.push(escapeCsv(item.severityStr));
-              // 指摘箇所 (highlightTargetPaths)
-              terms.push(escapeCsv(Array.from(item.highlightTargetPaths, (highlightTargetPath) => highlightTargetPath.cssPath).join("\n")));
-              // 知覚可能 ~ 堅牢 (evaluationItem_tableDataMetrics0 ~ evaluationItem_tableDataMetrics3)
-              terms.push(escapeCsv(item.evaluationItem_tableDataMetrics0));
-              terms.push(escapeCsv(item.evaluationItem_tableDataMetrics1));
-              terms.push(escapeCsv(item.evaluationItem_tableDataMetrics2));
-              terms.push(escapeCsv(item.evaluationItem_tableDataMetrics3));
-              // WCAG 2.0 ~ JIS (evaluationItem_tableDataGuideline0 ~ evaluationItem_tableDataGuideline2)
-              terms.push(escapeCsv(item.evaluationItem_tableDataGuideline0));
-              terms.push(escapeCsv(item.evaluationItem_tableDataGuideline1));
-              terms.push(escapeCsv(item.evaluationItem_tableDataGuideline2));
-              // 達成方法 (evaluationItem_tableDataTechniques)
-              terms.push(escapeCsv(item.evaluationItem_tableDataTechniques));
-              // 内容 (description)
-              terms.push(escapeCsv(item.description));
-
-              csv.push(terms.join(","));
-            });
-
-            download(csv, `html-checker-${moment().format("YYYY-MM-DD")}.csv`);
           },
           updateLowVisionFilter: function() {
             const filters = [];

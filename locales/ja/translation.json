@@ -26,6 +26,27 @@
     "validation": "検証",
     "help": "検証したい URL を入力し、「検証」ボタンをクリックしてください。"
   },
+  "problemTable": {
+    "severity": "深刻度",
+    "highlightPaths": "ハイライト",
+    "perceivable": "$t(enum.metrics.perceivable)",
+    "operable": "$t(enum.metrics.operable)",
+    "understandable": "$t(enum.metrics.understandable)",
+    "robust": "$t(enum.metrics.robust)",
+    "wcag2": "$t(enum.guidelines.wcag2)",
+    "section508": "$t(enum.guidelines.section508)",
+    "jis": "$t(enum.guidelines.jis)",
+    "techniques": "達成方法",
+    "description": "内容",
+    "foreground": "前景色",
+    "background": "背景色",
+    "x": "X座標",
+    "y": "Y座標",
+    "area": "面積"
+  },
+  "htmlCheckerTab": {
+    "title": "アクセシビリティ検証"
+  },
   "enum": {
     "severities": {
       "all": "すべての項目",
@@ -42,6 +63,17 @@
       "protan": "第一色覚異常（赤色覚異常）",
       "deutan": "第二色覚異常（緑色覚異常）",
       "tritan": "第三色覚異常（青色覚異常）"
+    },
+    "metrics": {
+      "perceivable": "知覚可能",
+      "operable": "知覚可能",
+      "understandable": "理解可能",
+      "robust": "堅ろう（牢）"
+    },
+    "guidelines": {
+      "wcag2": "WCAG 2.0",
+      "section508": "Section508",
+      "jis": "JIS"
     }
   }
 }

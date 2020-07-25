@@ -10,6 +10,19 @@
     "filter": "晶状体透过率",
     "filterDescription": "0.6: 60来岁, 0.8: 40来岁, 1.0: 20来岁"
   },
+  "problemTable": {
+    "severity": "严重性",
+    "highlightPaths": "高亮",
+    "description": "问题描述",
+    "foreground": "前景颜色",
+    "background": "背景颜色",
+    "x": "X",
+    "y": "Y",
+    "area": "区域"
+  },
+  "htmlCheckerTab": {
+    "title": "无障碍"
+  },
   "enum": {
     "severities": {
       "all": "所有错误",
