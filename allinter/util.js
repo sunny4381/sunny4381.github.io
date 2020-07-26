@@ -52,3 +52,26 @@ export function convertSeverityIdToName(severityId) {
 
   return i18next.t(`enum.severities.${severityId}`, i18next.t("enum.severities.all"));
 }
+
+export function normalizeText(text) {
+  if (! text) {
+    return "";
+  }
+
+  return text.trim();
+}
+
+const KNOWN_SEVERITY_IDS = [ "all", "essential", "warning", "userCheck", "info" ];
+
+export function normalizeSeverity(id) {
+  if (!id) {
+    return "all";
+  }
+
+  id = normalizeText(id);
+  if (KNOWN_SEVERITY_IDS.includes(id)) {
+    return id;
+  }
+
+  return "all";
+}

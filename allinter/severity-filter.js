@@ -1,16 +1,4 @@
-const KNOWN_SEVERITY_IDS = [ "all", "essential", "warning", "userCheck", "info" ];
-
-function normalizeSeverity(id) {
-  if (!id) {
-    return "all";
-  }
-
-  if (KNOWN_SEVERITY_IDS.includes(id)) {
-    return id;
-  }
-
-  return "all";
-}
+import { normalizeSeverity } from "./util.js";
 
 function sum(array) {
   return array.reduce((a, b) => a + b, 0);
@@ -33,9 +21,18 @@ export default {
   props: ['counts', 'severity'],
   data: function() {
     return {
-      selected: normalizeSeverity(this.severity),
-      totalCount: sum(this.counts)
+      selected: normalizeSeverity(this.severity)
     };
+  },
+  computed: {
+    totalCount: function() {
+      return sum(this.counts);
+    }
+  },
+  watch: {
+    severity: function(newVal, _oldVal) {
+      this.selected = normalizeSeverity(newVal);
+    }
   },
   methods: {
     changeSeverity: function(severity) {
