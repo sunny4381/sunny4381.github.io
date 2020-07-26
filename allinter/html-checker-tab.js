@@ -52,7 +52,6 @@ export default {
   props: ['validating', 'problem'],
   data: function() {
     return {
-      tableData: tableData(this.problem),
       filterSeverity: "",
       filterText: "",
       filter: "",
@@ -138,9 +137,9 @@ export default {
       ]
     };
   },
-  watch: {
-    problem: function(newVal, _oldVal) {
-      this.tableData = tableData(newVal);
+  computed: {
+    tableData: function() {
+      return tableData(this.problem);
     }
   },
   created: function() {
