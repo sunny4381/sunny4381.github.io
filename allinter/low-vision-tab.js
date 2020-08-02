@@ -1,59 +1,151 @@
-import { lastTag, sliceMap, escapeCsv, download, convertSeverityIdToName } from "./util.js";
+import { lastTag, sliceMap, escapeCsv, download, convertSeverityIdToName, normalizeText, normalizeSeverity } from "./util.js";
 
-function tableData(problemData) {
-  const tableData = { tabId: null, items: [], counts: [ 0, 0, 0, 0 ] };
-  if (!problemData || !problemData.problems || problemData.problems.length === 0) {
+class TableData {
+  static _empty = null;
+
+  tabId = null;
+  items = null;
+  counts = null;
+  isEmpty = true;
+
+  static empty() {
+    if (! TableData._empty) {
+      TableData._empty = new TableData();
+      TableData._empty.items = [];
+    }
+
+    return TableData._empty;
+  }
+
+  static isEmptyProblemData(problemData) {
+    return !problemData || !problemData.problems || problemData.problems.length === 0;
+  }
+
+  static create(problemData) {
+    if (TableData.isEmptyProblemData(problemData)) {
+      return TableData.empty();
+    }
+
+    const tableData = new TableData();
+    tableData.tabId = problemData.tabId;
+    tableData.sourceImage = problemData.sourceImageDataUrl;
+    tableData.outputImage = problemData.outputImageDataUrl;
+    tableData.items = Array.from(problemData.problems, (problem, index) => {
+      return {
+        id: index,
+        severityValue: problem.severity,
+        type: problem.iconTooltip,
+        wcag2: problem.evaluationItem["tableDataGuideline"][0],
+        section508: problem.evaluationItem["tableDataGuideline"][1],
+        jis: problem.evaluationItem["tableDataGuideline"][2],
+        techniques: problem.evaluationItem["tableDataTechniques"],
+        severityLV: problem.severityLV,
+        foreground: problem.foreground,
+        background: problem.background,
+        x: problem.x,
+        y: problem.y,
+        area: problem.area,
+        highlightPaths: problem.cssPath ? [ { id: 0, cssPath: problem.cssPath, lastTag: lastTag(problem.cssPath) } ] : [],
+        description: problem.description
+      };
+    });
+
+    tableData.isEmpty = false;
+
+    tableData.computeCounts();
+
     return tableData;
   }
 
-  tableData.tabId = problemData.tabId;
-  tableData.sourceImage = problemData.sourceImageDataUrl;
-  tableData.outputImage = problemData.outputImageDataUrl;
-  tableData.items = Array.from(problemData.problems, (problem, index) => {
-    return {
-      id: index,
-      severity: problem.severityStr,
-      type: problem.iconTooltip,
-      wcag2: problem.evaluationItem["tableDataGuideline"][0],
-      section508: problem.evaluationItem["tableDataGuideline"][1],
-      jis: problem.evaluationItem["tableDataGuideline"][2],
-      techniques: problem.evaluationItem["tableDataTechniques"],
-      severityLV: problem.severityLV,
-      foreground: problem.foreground,
-      background: problem.background,
-      x: problem.x,
-      y: problem.y,
-      area: problem.area,
-      highlightPaths: problem.cssPath ? [ { id: 0, cssPath: problem.cssPath, lastTag: lastTag(problem.cssPath) } ] : [],
-      description: problem.description
-    };
-  });
+  get isPresented() {
+    return !this.isEmpty;
+  }
 
-  problemData.problems.forEach((problem, index) => {
-    if (problem.severity & 1) {
-      tableData.counts[0] += 1;
-    }
-    if (problem.severity & 2) {
-      tableData.counts[1] += 1;
-    }
-    if (problem.severity & 4) {
-      tableData.counts[2] += 1;
-    }
-    if (problem.severity & 8) {
-      tableData.counts[3] += 1;
-    }
-  });
+  computeCounts() {
+    this.applyFilter(null);
+  }
 
-  return tableData;
+  applyFilter(filter) {
+    if (this.isEmpty) {
+      return;
+    }
+
+    const filteredItems = filter && filter.text ? this.items.filter(item => item.description.includes(filter.text)) : this.items;
+
+    this.counts = [ 0, 0, 0, 0 ];
+    filteredItems.forEach((item) => {
+      if (item.severityValue & 1) {
+        this.counts[0] += 1;
+      }
+      if (item.severityValue & 2) {
+        this.counts[1] += 1;
+      }
+      if (item.severityValue & 4) {
+        this.counts[2] += 1;
+      }
+      if (item.severityValue & 8) {
+        this.counts[3] += 1;
+      }
+    });
+  }
 }
+
+// function tableData(problemData) {
+//   const tableData = { tabId: null, items: [], counts: [ 0, 0, 0, 0 ] };
+//   if (!problemData || !problemData.problems || problemData.problems.length === 0) {
+//     return tableData;
+//   }
+
+//   tableData.tabId = problemData.tabId;
+//   tableData.sourceImage = problemData.sourceImageDataUrl;
+//   tableData.outputImage = problemData.outputImageDataUrl;
+//   tableData.items = Array.from(problemData.problems, (problem, index) => {
+//     return {
+//       id: index,
+//       severity: problem.severityStr,
+//       type: problem.iconTooltip,
+//       wcag2: problem.evaluationItem["tableDataGuideline"][0],
+//       section508: problem.evaluationItem["tableDataGuideline"][1],
+//       jis: problem.evaluationItem["tableDataGuideline"][2],
+//       techniques: problem.evaluationItem["tableDataTechniques"],
+//       severityLV: problem.severityLV,
+//       foreground: problem.foreground,
+//       background: problem.background,
+//       x: problem.x,
+//       y: problem.y,
+//       area: problem.area,
+//       highlightPaths: problem.cssPath ? [ { id: 0, cssPath: problem.cssPath, lastTag: lastTag(problem.cssPath) } ] : [],
+//       description: problem.description
+//     };
+//   });
+
+//   problemData.problems.forEach((problem, index) => {
+//     if (problem.severity & 1) {
+//       tableData.counts[0] += 1;
+//     }
+//     if (problem.severity & 2) {
+//       tableData.counts[1] += 1;
+//     }
+//     if (problem.severity & 4) {
+//       tableData.counts[2] += 1;
+//     }
+//     if (problem.severity & 8) {
+//       tableData.counts[3] += 1;
+//     }
+//   });
+
+//   return tableData;
+// }
 
 export default {
   props: ['validating', 'problem'],
   data: function() {
     return {
-      filterSeverity: "",
-      filterText: "",
-      filter: "",
+      filter: {
+        summary: "",
+        severity: normalizeSeverity(),
+        text: ""
+      },
       fields: [],
       masterFields: [
         {
@@ -158,7 +250,7 @@ export default {
   },
   computed: {
     tableData: function() {
-      return tableData(this.problem);
+      return TableData.create(this.problem);
     }
   },
   created: function() {
@@ -176,39 +268,40 @@ export default {
         }));
       }
     },
-    hasProblem: function() {
-      return this.tableData && this.tableData.items && this.tableData.items.length > 0;
-    },
     updateFilter: function() {
       const filters = [];
-      if (this.filterText && this.filterText.trim()) {
-        filters.push(this.filterText.trim());
+      if (this.filter.severity) {
+        filters.push(this.filter.severity);
       }
-      if (this.filterSeverity && this.filterSeverity.trim()) {
-        filters.push(this.filterSeverity.trim());
+      if (this.filter.text) {
+        filters.push(this.filter.text);
       }
 
-      this.filter = filters.join(" ");
+      this.filter.summary = filters.join(" ");
+      this.tableData.applyFilter(this.filter);
     },
-    changeFilterSeverity: function(severity) {
-      this.filterSeverity = severity;
+    changeSeverityFilter: function(severity) {
+      this.filter.severity = normalizeSeverity(severity);
+      this.updateFilter();
+    },
+    changeTextFilter: function(text) {
+      this.filter.severity = normalizeSeverity();
+      this.filter.text = normalizeText(text);
       this.updateFilter();
     },
     doFilter: function(row, filter) {
-      if (this.filterText && this.filterText.trim()) {
+      if (this.filter.text) {
         // search in description
-        if (! row.description.includes(this.filterText.trim())) {
+        if (! row.description.includes(this.filter.text)) {
           return false;
         }
       }
 
-      if (this.filterSeverity && this.filterSeverity.trim()) {
-        if (this.filterSeverity !== "all") {
-          // match with severity
-          const severity = convertSeverityIdToName(this.filterSeverity)
-          if (row.severity !== severity) {
-            return false;
-          }
+      if (this.filter.severity && this.filter.severity !== "all") {
+        // match with severity
+        const severity = convertSeverityIdToName(this.filter.severity);
+        if (row.severity !== severity) {
+          return false;
         }
       }
 
@@ -267,15 +360,15 @@ export default {
   },
   template: `
     <b-tab :title="i18next.t('lowVisionTab.title')">
-      <div v-if="hasProblem()">
+      <div v-if="tableData.isPresented">
         <div class="row">
           <div class="col-3">
-            <allint-severity-filter :counts="tableData.counts" :severity="filterSeverity" @change-severity="changeFilterSeverity($event)"></allint-severity-filter>
+            <allint-severity-filter :counts="tableData.counts" :severity="filter.severity" @change-severity="changeSeverityFilter($event)"></allint-severity-filter>
           </div>
           <div class="col-9">
             <div class="row mb-1">
               <div class="col d-flex justify-content-end">
-                <allint-keyword-search-form :value="filterText" @search="filterText = $event; updateFilter();"></allint-keyword-search-form>
+                <allint-keyword-search-form :value="filter.text" @search="changeTextFilter($event)"></allint-keyword-search-form>
 
                 <allint-column-setting-form class="ml-2" :fields="masterFields" @column-setting-change="updateFields();"></allint-column-setting-form>
 
@@ -285,7 +378,7 @@ export default {
 
             <div class="row">
               <div class="col">
-                <b-table striped hover responsive sticky-header :items="tableData.items" :fields="fields" :filter="filter" :filter-function="doFilter">
+                <b-table striped hover responsive sticky-header :items="tableData.items" :fields="fields" :filter="filter.summary" :filter-function="doFilter">
                   <template v-slot:cell(highlightPaths)="data">
                     <span v-if="data.value && data.value.length > 0">
                       <allint-highlighter v-for="path in data.value" :key="path.id" :path="path" @highlight="highlightElement"></allint-highlighter>

@@ -234,7 +234,7 @@ export default {
 
       if (this.filter.severity && this.filter.severity !== "all") {
         // match with severity
-        const severity = convertSeverityIdToName(this.filter.severity)
+        const severity = convertSeverityIdToName(this.filter.severity);
         if (row.severity !== severity) {
           return false;
         }
