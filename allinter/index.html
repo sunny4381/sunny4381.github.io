@@ -194,7 +194,7 @@
                 // this.browserTabId = ev.data.tabId;
                 break;
               case "allinter.htmlChecker.result":
-                this.result.htmlCheckerProblemData = sliceMap(ev.data, [ "tabId", "url" ]);
+                this.result.htmlCheckerProblemData = sliceMap(ev.data, [ "name", "tabId", "url" ]);
                 this.result.htmlCheckerProblemData.problems = Array.from(ev.data.problems, (problem) => {
                   return sliceMap(problem, [
                     "canHighlight", "description", "evaluationItem", "highlightTargetPaths", "lineStrMulti",
@@ -203,7 +203,7 @@
                 });
                 break;
               case "allinter.lowVision.result":
-                this.result.lowVisionProblemData = sliceMap(ev.data, [ "tabId", "url", "sourceImageDataUrl", "outputImageDataUrl" ]);
+                this.result.lowVisionProblemData = sliceMap(ev.data, [ "name", "tabId", "url", "sourceImageDataUrl", "outputImageDataUrl" ]);
                 this.result.lowVisionProblemData.problems = Array.from(ev.data.problems, (problem) => {
                   return sliceMap(problem, [
                     "canHighlight", "description", "evaluationItem", "highlightTargetPaths", "lineStrMulti",
