@@ -203,6 +203,10 @@
                   ]);
                 });
                 break;
+              case "allinter.htmlChecker.error":
+                this.result.htmlCheckerProblemData = sliceMap(ev.data, [ "name", "tabId", "url", "errorClass", "errorMessage", "errorTraces" ]);
+                this.result.htmlCheckerProblemData.problems = [];
+                break;
               case "allinter.lowVision.result":
                 this.result.lowVisionProblemData = sliceMap(ev.data, [ "name", "tabId", "url", "sourceImageDataUrl", "outputImageDataUrl" ]);
                 this.result.lowVisionProblemData.problems = Array.from(ev.data.problems, (problem) => {
@@ -211,6 +215,10 @@
                     "severity", "severityStr", "severityLV", "foreground", "background", "x", "y", "area", "cssPath"
                   ]);
                 });
+                break;
+              case "allinter.lowVision.error":
+                this.result.lowVisionProblemData = sliceMap(ev.data, [ "name", "tabId", "url", "errorClass", "errorMessage", "errorTraces" ]);
+                this.result.lowVisionProblemData.problems = [];
                 break;
             }
           });

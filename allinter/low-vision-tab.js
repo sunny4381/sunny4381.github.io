@@ -231,6 +231,18 @@ export default {
           </div>
         </div>
       </div>
+      <div v-else-if="tableData.isError">
+        <div class="row">
+          <div class="col">
+            <b-alert show variant="warning">
+              <h4 class="alert-heading">{{this.tableData.errorClass}}</h4>
+              <p>{{this.tableData.errorMessage}}</p>
+              <hr>
+              <p class="mb-0" v-html="this.tableData.errorTraces.join('<br>')"></p>
+            </b-alert>
+          </div>
+        </div>
+      </div>
       <div v-else-if="tableData.isPresented">
         <div class="row">
           <div class="col-3">

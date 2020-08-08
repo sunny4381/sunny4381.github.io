@@ -33,7 +33,11 @@ export default class TableData {
   sourceImage = null;
   outputImage = null;
   counts = null;
+  errorClass = null;
+  errorMessage = null;
+  errorTraces = null;
   isEmpty = true;
+  isError = false;
 
   static empty() {
     if (! TableData._empty) {
@@ -45,7 +49,7 @@ export default class TableData {
   }
 
   static isEmptyProblemData(problemData) {
-    return !problemData || !problemData.problems || problemData.problems.length === 0;
+    return !problemData || !problemData.problems || (problemData.problems.length === 0 && !problemData.errorMessage);
   }
 
   static create(problemData) {
@@ -55,6 +59,8 @@ export default class TableData {
 
     const highlightPaths = problemData.name === "allinter.htmlChecker.result" ? htmlChecker_highlightPaths : lowVision_highlightPaths
     const tableData = new TableData();
+    tableData.isEmpty = false;
+    tableData.isError = false;
     tableData.tabId = problemData.tabId;
     if (problemData.sourceImageDataUrl) {
       tableData.sourceImage = problemData.sourceImageDataUrl;
@@ -80,7 +86,12 @@ export default class TableData {
       };
     });
 
-    tableData.isEmpty = false;
+    if (problemData.name.endsWith(".error")) {
+      tableData.isError = true;
+      tableData.errorClass = problemData.errorClass;
+      tableData.errorMessage = problemData.errorMessage;
+      tableData.errorTraces = problemData.errorTraces;
+    }
 
     tableData.computeCounts();
 
