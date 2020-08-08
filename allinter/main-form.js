@@ -14,7 +14,8 @@ export default {
         <small id="url-help" class="form-text text-muted">{{i18next.t('mainForm.help')}}</small>
         <div class="d-flex justify-content-around">
           <button type="submit" class="btn btn-primary btn-lg">
-            <b-icon icon="play" />
+            <b-spinner type="border" small v-if="validating"></b-spinner>
+            <b-icon icon="play" v-else></b-icon>
             {{i18next.t('mainForm.validation')}}
           </button>
         </div>
