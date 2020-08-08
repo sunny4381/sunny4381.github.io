@@ -45,7 +45,9 @@
     "y": "Y",
     "area": "Area",
     "type": "Type",
-    "severityLV": "Severity Level"
+    "severityLV": "Severity Level",
+    "validating": "Validating ...",
+    "noResult": "There are no results"
   },
   "htmlCheckerTab": {
     "title": "Accessibility"

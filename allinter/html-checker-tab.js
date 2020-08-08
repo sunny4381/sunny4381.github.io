@@ -197,7 +197,14 @@ export default {
   },
   template: `
     <b-tab :title="i18next.t('htmlCheckerTab.title')">
-      <div v-if="tableData.isPresented">
+      <div v-if="validating && tableData.isEmpty">
+        <div class="row">
+          <div class="col">
+            {{i18next.t('problemTable.validating')}}
+          </div>
+        </div>
+      </div>
+      <div v-else-if="tableData.isPresented">
         <div class="row">
           <div class="col-3">
             <allint-severity-filter :counts="tableData.counts" :severity="filter.severity" @change-severity="changeSeverityFilter($event)"></allint-severity-filter>
@@ -224,6 +231,13 @@ export default {
                 </b-table>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+      <div v-else>
+        <div class="row">
+          <div class="col">
+            {{i18next.t('problemTable.noResult')}}
           </div>
         </div>
       </div>

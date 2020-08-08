@@ -44,7 +44,9 @@
     "y": "Y座標",
     "area": "面積",
     "type": "種類",
-    "severityLV": "深刻度"
+    "severityLV": "深刻度",
+    "validating": "検証中 ...",
+    "noResult": "結果がありません。"
   },
   "htmlCheckerTab": {
     "title": "アクセシビリティ検証"

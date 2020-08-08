@@ -224,7 +224,14 @@ export default {
   },
   template: `
     <b-tab :title="i18next.t('lowVisionTab.title')">
-      <div v-if="tableData.isPresented">
+      <div v-if="validating && tableData.isEmpty">
+        <div class="row">
+          <div class="col">
+            {{i18next.t('problemTable.validating')}}
+          </div>
+        </div>
+      </div>
+      <div v-else-if="tableData.isPresented">
         <div class="row">
           <div class="col-3">
             <allint-severity-filter :counts="tableData.counts" :severity="filter.severity" @change-severity="changeSeverityFilter($event)"></allint-severity-filter>
@@ -255,6 +262,13 @@ export default {
         </div>
 
         <allint-image-viewer :source="tableData.sourceImage" :output="tableData.outputImage"></allint-image-viewer>
+      </div>
+      <div v-else>
+        <div class="row">
+          <div class="col">
+            {{i18next.t('problemTable.noResult')}}
+          </div>
+        </div>
       </div>
     </b-tab>
   `
