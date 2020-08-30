@@ -75,3 +75,43 @@ export function normalizeSeverity(id) {
 
   return "all";
 }
+
+export function newState() {
+  return Math.floor(Math.random() * 0xffffffff).toString(16) + Math.floor(Math.random() * 0xffffffff).toString(16);
+}
+
+const promises = []
+
+export function addPromise(state, resolutionFunc, rejectionFunc) {
+  promises.push([ state, resolutionFunc, rejectionFunc, Date.now() ]);
+}
+
+export function resolvePromise(state, ...resolveArgs) {
+  const found = promises.findIndex((item) => item[0] === state);
+  if (found < 0) {
+    return;
+  }
+
+  const items = promises.splice(found, 1);
+  if (!items || items.length === 0) {
+    return;
+  }
+
+  const resolutionFunc = items[0][1];
+  resolutionFunc(...resolveArgs);
+}
+
+export function rejectPromise(state, ...rejectArgs) {
+  const found = promises.findIndex((item) => item[0] === state);
+  if (found < 0) {
+    return;
+  }
+
+  const items = promises.splice(found, 1);
+  if (!items || items.length === 0) {
+    return;
+  }
+
+  const rejectionFunc = items[0][2];
+  rejectionFunc(...rejectArgs);
+}

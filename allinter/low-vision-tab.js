@@ -1,4 +1,4 @@
-import { lastTag, sliceMap, escapeCsv, download, convertSeverityIdToName, normalizeText, normalizeSeverity } from "./util.js";
+import { sliceMap, escapeCsv, download, convertSeverityIdToName, normalizeText, normalizeSeverity } from "./util.js";
 import TableData from "./table-data.js"
 
 export default {
@@ -121,17 +121,6 @@ export default {
     this.updateFields();
   },
   methods: {
-    highlightElement: function(path) {
-      if (! path || !path.cssPath) {
-        return;
-      }
-
-      if (typeof hostCallback !== "undefined") {
-        hostCallback(JSON.stringify({
-          name: "highlight", payload: { tabId: this.tableData.tabId, cssPath: path.cssPath }
-        }));
-      }
-    },
     updateFilter: function() {
       const filters = [];
       if (this.filter.severity) {
@@ -264,7 +253,7 @@ export default {
                 <b-table striped hover responsive sticky-header :items="tableData.items" :fields="fields" :filter="filter.summary" :filter-function="doFilter">
                   <template v-slot:cell(highlightPaths)="data">
                     <span v-if="data.value && data.value.length > 0">
-                      <allint-highlighter v-for="path in data.value" :key="path.id" :path="path" @highlight="highlightElement"></allint-highlighter>
+                      <allint-highlighter v-for="path in data.value" :key="path.id" :tabId="tableData.tabId" :path="path"></allint-highlighter>
                     </span>
                   </template>
                 </b-table>

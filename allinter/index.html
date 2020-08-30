@@ -135,7 +135,7 @@
       });
     });
 
-    import { lastTag, sliceMap, escapeCsv, download, convertSeverityIdToName } from "./util.js";
+    import { lastTag, sliceMap, escapeCsv, download, convertSeverityIdToName, resolvePromise, rejectPromise } from "./util.js";
 
     const promise2 = new Promise((resolve, reject) => {
       window.addEventListener("DOMContentLoaded", (ev) => {
@@ -219,6 +219,12 @@
               case "allinter.lowVision.error":
                 this.result.lowVisionProblemData = sliceMap(ev.data, [ "name", "tabId", "url", "errorClass", "errorMessage", "errorTraces" ]);
                 this.result.lowVisionProblemData.problems = [];
+                break;
+              case "allinter.stateSuccess":
+                resolvePromise(ev.data.state);
+                break;
+              case "allinter.stateError":
+                rejectPromise(ev.data.state, sliceMap(ev.data, [ "name", "state", "errorClass", "errorMessage", "errorTraces" ]));
                 break;
             }
           });
