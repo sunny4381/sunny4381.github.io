@@ -13,28 +13,26 @@ export default {
         return;
       }
 
-      if (typeof hostCallback !== "undefined") {
-        const state = newState();
-        const promise = new Promise((resolutionFunc, rejectionFunc) => {
-          addPromise(state, resolutionFunc, rejectionFunc);
-        });
-        const timeout = new Promise((resolutionFunc, rejectionFunc) => {
-          setTimeout(resolutionFunc, 5000);
-        });
+      const state = newState();
+      const promise = new Promise((resolutionFunc, rejectionFunc) => {
+        addPromise(state, resolutionFunc, rejectionFunc);
+      });
+      const timeout = new Promise((resolutionFunc, rejectionFunc) => {
+        setTimeout(resolutionFunc, 5000);
+      });
 
-        this.disabled = true;
-        hostCallback(JSON.stringify({
-          name: "highlight", payload: { tabId: this.tabId, cssPath: this.path.cssPath }, state: state
-        }));
+      this.disabled = true;
+      hostCallback(JSON.stringify({
+        name: "highlight", payload: { tabId: this.tabId, cssPath: this.path.cssPath }, state: state
+      }));
 
-        Promise.race([ promise, timeout ]).catch((error) => {
-          setTimeout(() => {
-            alert(error.errorMessage);
-          }, 0);
-        }).finally(() => {
-          this.disabled = false;
-        });
-      }
+      Promise.race([ promise, timeout ]).catch((error) => {
+        setTimeout(() => {
+          alert(error.errorMessage);
+        }, 0);
+      }).finally(() => {
+        this.disabled = false;
+      });
     },
   },
   template: `

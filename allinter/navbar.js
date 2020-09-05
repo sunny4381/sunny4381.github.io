@@ -79,7 +79,7 @@ export default {
         <b-navbar-nav>
           <b-nav-text>html5 accessibility and low vision linter</b-nav-text>
         </b-navbar-nav>
-        <b-navbar-nav class="ml-auto" v-if="typeof hostCallback !== 'undefined'">
+        <b-navbar-nav class="ml-auto">
           <b-button variant="outline-secondary" @click="openModal();">
             <b-icon icon="gear" />
             {{i18next.t('navbar.setting')}}
@@ -91,7 +91,7 @@ export default {
         </b-navbar-nav>
       </b-collapse>
 
-      <allint-application-setting-modal :id="modalId()" :setting="setting" @ok="$emit('application-setting-change');" v-if="typeof hostCallback !== 'undefined'"></allint-application-setting-modal>
+      <allint-application-setting-modal :id="modalId()" :setting="setting" @ok="$emit('application-setting-change');"></allint-application-setting-modal>
     </b-navbar>
   `
 };

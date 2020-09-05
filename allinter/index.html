@@ -58,6 +58,10 @@
   <script src="https://unpkg.com/i18next-fetch-backend@3.0.0/dist/i18next-fetch-backend.umd.js"></script>
 </head>
 <body>
+  <div id="splash" class="container-fluid">
+    <p>アプリケーションを起動中です。しばらくお待ちください。</p>
+  </div>
+
   <div id="app">
     <allint-navbar :setting="settings" @application-setting-change="saveSettings" @quit-application="quitApplication"></allint-navbar>
 
@@ -74,9 +78,6 @@
         </b-card>
       </div>
     </div> <!-- end of .container -->
-    <div  class="container" v-else>
-      ブラウザで直接 URL へアクセスしても allinter はご利用いただけません。プログラムから起動してください。
-    </div>
 
   </div> <!-- end of #app -->
 
@@ -143,7 +144,28 @@
       });
     });
 
-    Promise.all([promise1, promise2]).then(() => {
+    // 100 means 100 x 0.1 seconds = 10 seconds
+    const MAX_TYRIES = 100;
+
+    const promise3 = new Promise((resolve, reject) => {
+      let numTry = 0;
+      const waitForHostCallback = function() {
+        if (typeof hostCallback !== "undefined") {
+          resolve();
+        } else {
+          numTry += 1;
+          if (numTry >= MAX_TYRIES) {
+            reject("timeout");
+          }
+
+          setTimeout(waitForHostCallback, 100);
+        }
+      };
+
+      waitForHostCallback();
+    });
+
+    Promise.all([promise1, promise2, promise3]).then(() => {
       const app = new Vue({
         el: "#app",
         data: {
@@ -167,11 +189,9 @@
         },
         created: function() {
           window.addEventListener("beforeunload", (ev) => {
-            if (typeof hostCallback !== "undefined") {
-              ev.preventDefault();
-              ev.returnValue = '';
-              hostCallback(JSON.stringify({ name: "quit" }));
-            }
+            ev.preventDefault();
+            ev.returnValue = '';
+            hostCallback(JSON.stringify({ name: "quit" }));
           });
           window.addEventListener("message", (ev) => {
             console.log({ on: "message", ev: ev, data: ev.data })
@@ -234,9 +254,9 @@
             this.url = lastUrl;
           }
 
-          if (typeof hostCallback !== "undefined") {
-            hostCallback(JSON.stringify({ name: "syncSettings" }));
-          }
+          hostCallback(JSON.stringify({ name: "syncSettings" }));
+
+          document.getElementById("splash").remove();
         },
         methods: {
           validatePage: function(url) {
@@ -247,28 +267,24 @@
               return;
             }
 
-            if (typeof hostCallback !== "undefined") {
-              this.validating = true;
-              this.result.htmlCheckerProblemData = {};
-              this.result.lowVisionProblemData = {};
-              this.tabIndex = 0;
+            this.validating = true;
+            this.result.htmlCheckerProblemData = {};
+            this.result.lowVisionProblemData = {};
+            this.tabIndex = 0;
 
-              hostCallback(JSON.stringify({ name: "open", payload: { url: this.url } }));
-              sessionStorage.setItem("lastUrl", this.url);
-            }
+            hostCallback(JSON.stringify({ name: "open", payload: { url: this.url } }));
+            sessionStorage.setItem("lastUrl", this.url);
           },
           quitApplication: function() {
-            if (typeof hostCallback !== "undefined") {
-              hostCallback(JSON.stringify({ name: "quit" }));
-            }
+            hostCallback(JSON.stringify({ name: "quit" }));
           },
           saveSettings: function() {
-            if (typeof hostCallback !== "undefined") {
-              hostCallback(JSON.stringify({ name: "setSettings", payload: this.settings }));
-            }
+            hostCallback(JSON.stringify({ name: "setSettings", payload: this.settings }));
           },
         }
       });
+    }).catch(() => {
+      document.getElementById("splash").innerHTML = "<p>アプリケーションの起動に失敗しました。</p><p>ブラウザで直接 URL へアクセスしても allinter はご利用いただけません。プログラムから起動してください。</p>";
     });
    </script>
 </body>
